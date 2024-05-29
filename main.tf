@@ -22,3 +22,17 @@ module "securitygroup" {
 }
 
 
+module "securitygroup" {
+  source = "./modules/securitygroup"
+  vpc-id = module.vpc.vpc_id
+}
+
+
+module "nexus" {
+  source = "./modules/nexus"
+  red_hat = ""
+  nexus_subnet = module.vpc.pubsn1_id
+  pub_key = ""
+  nexus_sg = ""
+  nexus_name = "${local.name}-nexus"
+}
