@@ -1,7 +1,10 @@
-variable "vpc_cidr" {
-  type = string
-}
-
-variable "name" {
-  type = string
-}
+variable "avz1" {}
+variable "avz2" {}
+variable "name-vpc" {}
+variable "name-igw" {}
+variable "name-ngw" {}
+variable "name-eip" {}
+variable "name-pubsn1" {}
+variable "name-pubsn2" {}
+variable "name-prvsn1" {}
+variable "name-prvsn2" {}
