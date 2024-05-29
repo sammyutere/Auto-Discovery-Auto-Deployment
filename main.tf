@@ -16,3 +16,9 @@ module "vpc" {
 
 }
 
+module "securitygroup" {
+  source = "./modules/securitygroup"
+  vpc-id = module.vpc.vpc_id
+}
+
+
