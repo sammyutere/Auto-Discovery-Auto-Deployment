@@ -94,8 +94,6 @@ resource "aws_route_table" "prv-rt" {
     Name = var.name-prv-rt
   }
 }
-
-
 #Route table associations
 resource "aws_route_table_association" "rta-pub1" {
   subnet_id      = aws_subnet.public_subnet1.id

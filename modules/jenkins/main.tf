@@ -1,9 +1,8 @@
-resource "" "aws_instance" "teamjenkins" {
+resource  "aws_instance" "jenkins_server" {
   ami                         = var.ami-redhat
   instance_type               = "t3.medium"
   subnet_id                   = var.subnet-id
   vpc_security_group_ids      = [var.jenkins-sg]
-  associate_public_ip_address = true
   key_name                    = var.key-name 
   user_data                   = local.jenkins_user_data
 
@@ -32,7 +31,7 @@ resource "aws_elb" "jenkins_lb" {
     interval            = 30
   }
 
-    instances                   = [aws_instance.teamjenkins.id]
+    instances                   = [aws_instance.jenkins_server.id]
     cross_zone_load_balancing   = true
     idle_timeout                = 400
     connection_draining         = true
