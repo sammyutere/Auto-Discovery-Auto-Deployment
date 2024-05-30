@@ -24,3 +24,12 @@ module "nexus" {
   nexus_sg = ""
   nexus_name = "${local.name}-nexus"
 }
+
+module "docker" {
+  source = "./modules/docker"
+  red_hat = ""
+  docker_subnet = module.vpc.prvsn1_id
+  pub_key = ""
+  docker_sg = ""
+  docker_name = "${local.name}-nexus"
+}
