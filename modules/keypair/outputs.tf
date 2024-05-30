@@ -1,8 +1,9 @@
-output "key_pair_id" {
+output "pub_key_pair_id" {
   description = "The key pair ID"
-  value       = module.key_pair.key_pair_id
+  value       = aws_key_pair.public_key.id
 }
 
-output "public_key_pem" {
+output "private_key_pem" {
   description = "Public key data in PEM (RFC 1421) format"
-  value       = module.key_pair.public_key_pem
+  value       = tls_private_key.keypair.private_key_pem
+}

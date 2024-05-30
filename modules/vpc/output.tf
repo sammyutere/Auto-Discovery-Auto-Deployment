@@ -16,25 +16,8 @@ output "pubsn2_id" {
 output "prvsn1_id" {
   value = aws_subnet.private_subnet1.id
 }
-output "privsn2_id" {
+output "prvsn2_id" {
   value = aws_subnet.private_subnet2.id
 }
-output "pub-rt_id" {
-  value = aws_route_table.pub-rt.id
-}
-output "prv-rt_id" {
-  value = aws_route_table.prv-rt.id
-}
-output "rta-pub1_id" {
-  value = aws_route_table_association.rta-pub1.id
-}
-output "rta-pub2_id" {
-  value = aws_route_table_association.rta-pub2.id
-}
-output "rta-prv1_id" {
-  value = aws_route_table_association.rta-prv1
-}
-output "rta-prv2_id" {
-  value = aws_route_table_association.rta-prv2
-}
+
 

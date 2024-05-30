@@ -24,7 +24,7 @@ sudo usermod -aG docker jenkins
 sudo chmod 777 /var/run/docker/.sock
 sudo cat <<EOT>> /etc/docker/daemon.json
 } 
-  "insecure-resgistries" : ["${var.nexus-ip}:8085"]
+  "insecure-registries" : ["${var.nexus-ip}:8085"]
 }
 EOT
 sudo systemctl restart docker
@@ -41,8 +41,8 @@ EOT
 sudo yum -y update
 sudo yum -y install trivy
 
-curl -Ls https://download.newrelic.com/install/newrelic-cli/scipts/install.sh | bash && sudo NEW_RELIC_API_KEY="${var.nr-key}" NEW_RELIC
+curl -Ls https://download.newrelic.com/install/newrelic-cli/scipts/install.sh | bash && sudo NEW_RELIC_API_KEY="${var.nr-key}" NEW_RELIC_ACCOUNT_ID="${var.nr-acc-id}" NEW_RELIC_REGION="${var.nr-region}" /usr/local/bin/newrelic install -y
 
-sudo hostnamectl set-hostanem jenkins
+sudo hostnamectl set-hostname jenkins
 EOF
 }
