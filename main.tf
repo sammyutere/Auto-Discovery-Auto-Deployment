@@ -37,6 +37,15 @@ module "nexus" {
   nexus_name = "${local.name}-nexus"
 }
 
+
+module "docker" {
+  source = "./modules/docker"
+  red_hat = ""
+  docker_subnet = module.vpc.prvsn1_id
+  pub_key = ""
+  docker_sg = ""
+  docker_name = "${local.name}-nexus"
+}
 # create subnet group
 resource "aws_db_subnet_group" "default" {
   name       = "main"
@@ -61,4 +70,3 @@ resource "aws_rds_cluster" "default" {
   backup_retention_period = 5
   preferred_backup_window = "07:00-09:00"
 }
-
