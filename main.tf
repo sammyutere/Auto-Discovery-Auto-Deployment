@@ -20,7 +20,13 @@ module "nexus" {
   source = "./modules/nexus"
   red_hat = ""
   nexus_subnet = module.vpc.pubsn1_id
-  pub_key = ""
+  pub_key = module.keypair.public_key_pem
   nexus_sg = ""
   nexus_name = "${local.name}-nexus"
+}
+
+module "keypair" {
+  source = "./modules/keypair"
+  key_name = "petkey"
+  create_private_key = true
 }
