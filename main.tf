@@ -70,3 +70,14 @@ module "rds" {
   db_password = ""
   rds_sg = module.securitygroup.rds-sq
 }
+
+# Creating bastion host
+module "bastion" {
+  source            = "./modules/bastion"  
+  ami-id = ""
+  subnet_id         = module.vpc.pubsn1_id
+  ssh_key           = module.keypair.pub_key_pair_id
+  instance_type     = "t2.micro"
+  bastion-name = "${local.name}-bastion-host"
+  bastion-sg = module.securitygroup.bastion-sq
+}

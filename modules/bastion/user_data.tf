@@ -1,3 +1,6 @@
+locals {
+  bastion-userdata = <<-EOF
+
 #!/bin/bash -x
 yum -y update --security
 
