@@ -16,6 +16,18 @@ module "vpc" {
 
 }
 
+module "securitygroup" {
+  source = "./modules/securitygroup"
+  vpc-id = module.vpc.vpc_id
+}
+
+
+module "securitygroup" {
+  source = "./modules/securitygroup"
+  vpc-id = module.vpc.vpc_id
+}
+
+
 module "nexus" {
   source = "./modules/nexus"
   red_hat = ""
