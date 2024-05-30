@@ -8,3 +8,5 @@ variable "name-pubsn1" {}
 variable "name-pubsn2" {}
 variable "name-prvsn1" {}
 variable "name-prvsn2" {}
+variable "name-pub-rt" {}
+variable "name-prv-rt" {}
