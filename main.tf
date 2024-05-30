@@ -13,7 +13,8 @@ module "vpc" {
   name-pubsn2 = "${local.name}-pubsn2"
   name-prvsn1 = "${local.name}-prvsn1"
   name-prvsn2 = "${local.name}-prvsn2"
-
+  name-pub-rt = "${local.name}-pub-rt"
+  name-prv-rt = "${local.name}-prv-rt"
 }
 
 module "securitygroup" {

@@ -67,3 +67,52 @@ resource "aws_subnet" "private_subnet2" {
     Name = var.name-prvsn2
   }
 }
+#public route table
+resource "aws_route_table" "pub-rt" {
+  vpc_id = aws_vpc.vpc.id
+
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = aws_internet_gateway.igw.id
+  }
+
+  tags = {
+    Name = var.name-pub-rt
+  }
+}
+
+#private route table
+resource "aws_route_table" "prv-rt" {
+  vpc_id = aws_vpc.vpc.id
+
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = aws_nat_gateway.nat.id
+  }
+
+  tags = {
+    Name = var.name-prv-rt
+  }
+}
+
+
+#Route table associations
+resource "aws_route_table_association" "rta-pub1" {
+  subnet_id      = aws_subnet.public_subnet1.id
+  route_table_id = aws_route_table.pub-rt.id
+}
+
+resource "aws_route_table_association" "rta-pub2" {
+  subnet_id      = aws_subnet.public_subnet2.id
+  route_table_id = aws_route_table.pub-rt.id
+}
+
+resource "aws_route_table_association" "rta-prv1" {
+  subnet_id      = aws_subnet.private_subnet1.id
+  route_table_id = aws_route_table.prv-rt.id
+}
+
+resource "aws_route_table_association" "rta-prv2" {
+  subnet_id      = aws_subnet.private_subnet2.id
+  route_table_id = aws_route_table.prv-rt.id
+}
