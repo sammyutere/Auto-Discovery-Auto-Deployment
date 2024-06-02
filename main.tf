@@ -81,3 +81,29 @@ module "bastion" {
   bastion-name = "${local.name}-bastion-host"
   bastion-sg = module.securitygroup.bastion-sq
 }
+
+# create vault server
+resource "aws_instance" "vault" {
+  ami     = var.ami-ubuntu
+  instance_type = "t2.medium"
+  vpc_security_group_ids = [aws_security_group.vault-SG.id]
+  key_name = aws_key_pair.vault-public-key.key_name
+  associate_public_ip_address = true
+  iam_instance_profile = aws_iam_instance_profile.vault-kms-unseal.id
+  user_data = tempatefile("./vault-user-data.sh", {
+    var2  = aws_kms_key.vault.id,
+    var1  = var.region
+  })
+  tags = {
+    Name  = "${local.name}-vault"
+  }
+}
+#create aws KMS
+resource "aws_kms_key" "vault" {
+  description             = "KMS key"
+  enable_key_rotation     = true
+  deletion_window_in_days = 20
+  tags = {
+    Name = "${local.name}-vault-kms"
+  }
+}
