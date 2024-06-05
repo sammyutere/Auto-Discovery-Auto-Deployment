@@ -115,6 +115,7 @@ resource "aws_instance" "vault" {
     Name  = "${local.name}-vault"
   }
 }
+    
 #create aws KMS
 resource "aws_kms_key" "vault" {
   description             = "KMS key"
