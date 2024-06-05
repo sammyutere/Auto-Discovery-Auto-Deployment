@@ -124,3 +124,14 @@ resource "aws_kms_key" "vault" {
     Name = "${local.name}-vault-kms"
   }
 }
+
+
+module "sonarqube" {
+  source = "./modules/sonarqube"
+  ami   = ""
+  sonarqube_server_name = "${local.name}-prvsn1"
+  instance_type = "t2.medium"
+  key_name = "pet_adoption"
+  sonarqube-sg = module.securitygroup.sonarqube-sq
+  subnet_id = ""
+}
