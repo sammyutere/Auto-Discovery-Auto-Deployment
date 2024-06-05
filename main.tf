@@ -115,3 +115,24 @@ resource "aws_instance" "vault" {
     Name  = "${local.name}-vault"
   }
 }
+    
+#create aws KMS
+resource "aws_kms_key" "vault" {
+  description             = "KMS key"
+  enable_key_rotation     = true
+  deletion_window_in_days = 20
+  tags = {
+    Name = "${local.name}-vault-kms"
+  }
+}
+
+
+module "sonarqube" {
+  source = "./modules/sonarqube"
+  ami   = ""
+  sonarqube_server_name = "${local.name}-prvsn1"
+  instance_type = "t2.medium"
+  key_name = "pet_adoption"
+  sonarqube-sg = module.securitygroup.sonarqube-sq
+  subnet_id = ""
+}
