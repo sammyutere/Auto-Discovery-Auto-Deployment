@@ -81,3 +81,13 @@ module "bastion" {
   bastion-name = "${local.name}-bastion-host"
   bastion-sg = module.securitygroup.bastion-sq
 }
+
+module "sonarqube" {
+  source = "./modules/sonarqube"
+  ami = ""
+  instance_type = "t2.medium"
+  sonarqube_server_name = "${local.name}-sonarqube_server"  
+  key_name = module.keypair.public_key_pem
+  sonarqube-sg = module.securitygtoup.sonarqube-sg
+  subnet_id = ""
+}
