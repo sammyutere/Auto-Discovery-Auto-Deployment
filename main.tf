@@ -115,12 +115,3 @@ resource "aws_instance" "vault" {
     Name  = "${local.name}-vault"
   }
 }
-#create aws KMS
-resource "aws_kms_key" "vault" {
-  description             = "KMS key"
-  enable_key_rotation     = true
-  deletion_window_in_days = 20
-  tags = {
-    Name = "${local.name}-vault-kms"
-  }
-}
