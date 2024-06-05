@@ -2,6 +2,18 @@ provider "aws" {
   region = "eu-west-3"
   profile = "set19"
 }
+
+terraform {
+  backend "s3" {
+    bucket = "set19-remote-tf"
+    key = "set19-vault/tfstate"
+    dynamodb_table = "petclinic"
+    region = "eu-west-3"
+    encrypt = true
+    profile ="set19"
+  }
+}
+
 resource "aws_instance" "vault_server" {
   ami           = var.ami-ubuntu
   instance_type = "t2.medium"
