@@ -22,6 +22,6 @@ instanceUpdate() {
   sleep 30
 }
 
-awsDiscovery
+awsDiscovery 
 inventoryUpdate
 #instanceUpdate
