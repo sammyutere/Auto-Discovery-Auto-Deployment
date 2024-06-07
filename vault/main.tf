@@ -33,7 +33,7 @@ resource "aws_kms_key" "vault" {
   enable_key_rotation     = true
   deletion_window_in_days = 20
   tags = {
-    Name = var.kms_key
+    Name = "vault-kms-key"
   }
 }
 

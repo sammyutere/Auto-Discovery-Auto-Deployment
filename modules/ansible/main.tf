@@ -6,7 +6,7 @@ resource "aws_instance" "ansible-server" {
   subnet_id                   = var.ansible_subnet
   associate_public_ip_address = true
   key_name                    = var.pub_key
-  user_data                   = local.ansible_user_data
+  #user_data                   = local.ansible_user_data
   tags = {
     name = var.ansible_name
   }
