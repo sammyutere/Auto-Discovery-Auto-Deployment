@@ -4,5 +4,5 @@ output "instance_id" {
 }
 
 output "Sonerqube-ip" {
-    value = aws_instance.SonarQube_Server.public_ip
+    value = aws_instance.sonarqube.public_ip
 }

@@ -1,0 +1,16 @@
+variable "ami" {}
+variable "asg-sg" {}
+variable "pub-key" {}
+variable "nexus-ip" {}
+variable "newrelic-user-licence" {}
+variable "newrelic-acct-id" {}
+variable "vpc-zone-identifier" {}
+variable "prod-asg-policy-name" {}
+variable "nexus-username" {}
+variable "nexus-password" {}
+variable "repository" {}
+variable "image-name" {}
+variable "container-name" {}
+variable "host-port" {}
+variable "container-port" {}
+variable "tg-arn" {}
