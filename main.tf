@@ -53,8 +53,8 @@ module "rds" {
   rds_subnet_id = [module.vpc.pubsn1_id, module.vpc.pubsn2_id]
   db_subtag     = "${local.name}-db_subgroup"
   db_name       = "petclinic"
-  db_username   = "admin"#data.vault_generic_secret.vault_secret.data["username"]
-  db_password   = "admin123"#data.vault_generic_secret.vault_secret.data["password"]
+  db_username   = "admin"    #data.vault_generic_secret.vault_secret.data["username"]
+  db_password   = "admin123" #data.vault_generic_secret.vault_secret.data["password"]
   rds_sg        = [module.securitygroup.rds-sq]
 }
 
@@ -65,21 +65,66 @@ module "bastion" {
   subnet_id     = module.vpc.pubsn1_id
   ssh_key       = module.keypair.pub_key_pair_id
   instance_type = "t2.micro"
-  private-key = module.keypair.private_key_pem
+  private-key   = module.keypair.private_key_pem
   bastion-name  = "${local.name}-bastion-host"
   bastion-sg    = module.securitygroup.bastion-sq
 }
 
 module "sonarqube" {
-  source = "./modules/sonarqube"
-  ami   = "ami-00ac45f3035ff009e"
+  source                = "./modules/sonarqube"
+  ami                   = "ami-00ac45f3035ff009e"
   sonarqube_server_name = "${local.name}-prvsn1"
-  instance_type = "t2.medium"
-  key_name = module.keypair.pub_key_pair_id
-  sonarqube-sg = module.securitygroup.sonarqube-sq
-  subnet_id = module.vpc.pubsn1_id
+  instance_type         = "t2.medium"
+  key_name              = module.keypair.pub_key_pair_id
+  sonarqube-sg          = module.securitygroup.sonarqube-sq
+  subnet_id             = module.vpc.pubsn1_id
 }
 
 # data "vault_generic_secret" "vault_secret" {
 #   path = secret/database
 # }
+
+module "prod-asg" {
+  source                = "./modules/prod-asg"
+  ami                   = "ami-05f804247228852a3"
+  asg-sg                = module.securitygroup.asg-sq
+  pub-key               = module.keypair.pub_key_pair_id
+  nexus-ip              = module.nexus.nexus_ip
+  newrelic-user-licence = "NRAK-ZTC5BPSBEBNDDQ1AEN6TY2KWOOJ"
+  newrelic-acct-id      = "4155533"
+  nexus-username        = "admin"
+  nexus-password        = "admin123"
+  repository            = "nexus-repo"
+  image-name            = "${nexus-ip}:8085/petclinicapps"
+  container-name        = "appContainer"
+  host-port             = 8080
+  container-port        = 80
+  vpc-zone-identifier   = [aws_subnet.public-subnet1.id, aws_subnet.public-subnet2.id]
+  prod-asg-policy-name  = "prod-asg-policy"
+  tg-arn                = [aws_lb_target_group.lb-tg.arn]
+
+}
+
+module "stage-asg" {
+  source                = "./modules/stage-asg"
+  ami                   = "ami-05f804247228852a3"
+  asg-sg                = module.securitygroup.asg-sq
+  pub-key               = module.keypair.pub_key_pair_id
+  nexus-ip              = module.nexus.nexus_ip
+  newrelic-user-licence = "NRAK-ZTC5BPSBEBNDDQ1AEN6TY2KWOOJ"
+  newrelic-acct-id      = "4155533"
+  nexus-username        = "admin"
+  nexus-password        = "admin123"
+  repository            = "nexus-repo"
+  image-name            = "${nexus-ip}:8085/petclinicapps"
+  container-name        = "appContainer"
+  host-port             = 8080
+  container-port        = 80
+  vpc-zone-identifier   = [aws_subnet.public-subnet1.id, aws_subnet.public-subnet2.id]
+  stage-asg-policy-name = "stage-asg-policy"
+  tg-arn                = [aws_lb_target_group.lb-tg.arn]
+
+}
+
+
+
