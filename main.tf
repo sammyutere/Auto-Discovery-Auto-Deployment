@@ -15,6 +15,7 @@ module "vpc" {
   name-prvsn2 = "${local.name}-prvsn2"
   name-pub-rt = "${local.name}-pub-rt"
   name-prv-rt = "${local.name}-prv-rt"
+  
 }
 
 module "securitygroup" {
@@ -146,5 +147,19 @@ module "route53" {
   stage_lb_zone_id   = module.stage.stage_zone_id
 }
 
+module "sonarqube" {
+  source = "./modules/sonarqube"
+  ami   = ""
+  sonarqube_server_name = "${local.name}-prvsn1"
+  instance_type = "t2.medium"
+  key_name = "pet_adoption"
+  sonarqube-sg = module.securitygroup.sonarqube-sq
+  subnet_id = ""
+}
 
-
+module "prod-lb" {
+  source = "./modules/prod-lb"
+  port_http = 80
+  port_https = 443
+  name-alb-prod = "${local.name}-alb-prod"  
+}
