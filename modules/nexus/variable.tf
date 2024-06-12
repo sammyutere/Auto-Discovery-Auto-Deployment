@@ -3,3 +3,5 @@ variable "nexus_subnet" {}
 variable "pub_key" {}
 variable "nexus_sg" {}
 variable "nexus_name" {}
+variable "subnet-elb" {}
+variable "cert-arn" {}

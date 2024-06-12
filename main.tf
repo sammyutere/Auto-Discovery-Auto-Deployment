@@ -30,8 +30,10 @@ module "nexus" {
   red_hat      = "ami-05f804247228852a3"
   nexus_subnet = module.vpc.pubsn1_id
   pub_key      = module.keypair.pub_key_pair_id
-  nexus_sg     = module.securitygroup.nexus-sq
+  nexus_sg     = module.securitygroup.nexus-sg
   nexus_name   = "${local.name}-nexus"
+  subnet-elb = [module.vpc.pubsn1_id, module.vpc.pubsn2_id]
+  cert-arn = ""
 }
 module "jenkins" {
   source       = "./modules/jenkins"
@@ -162,4 +164,39 @@ module "prod-lb" {
   port_http = 80
   port_https = 443
   name-alb-prod = "${local.name}-alb-prod"  
+  prod-sg = ""
+  subnet = ""
+  cert-arn = ""
+  vpc_id = ""
+}
+
+module "stage-lb" {
+  source = "./modules/stage-lb"
+  port_http = 80
+  port_https = 443
+  name-alb-stage = "${local.name}-alb-stage"  
+  stage-sg = ""
+  subnet = ""
+  cert-arn = ""
+  vpc_id = ""
+}
+
+
+module "ansible" {
+  source = "./modules/ansible"
+  red_hat = ""
+  ansible_subnet = module.vpc.prvsn1_id
+  pub_key = module.keypair.pub_key_pair_id
+  ansible_sg = module.securitygroup.ansible-sq
+  ansible_name = "${local.name}-ansible" 
+  stage-playbook = "${path.root}/modules/ansible/stage-playbook.yaml"
+  prod-playbook = "${path.root}/modules/ansible/prod-playbook.yaml"
+  stage-discovery-script = "${path.root}/modules/ansible/auto-discovery-stage.sh"
+  prod-discovery-script = "${path.root}/modules/ansible/auto-discovery-prod.sh"
+  private_key = module.keypair.private_key_pem
+  nexus-ip = module.nexus.nexus_ip
+  newrelic-license-key = "NRAK-W7PYXA013NC8GAFZL30HD58HOUO"
+  newrelic-acct-id = "4456322"  
+
+  
 }

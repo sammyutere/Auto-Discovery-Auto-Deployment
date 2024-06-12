@@ -7,20 +7,15 @@ resource "aws_launch_template" "stage_lt" {
   user_data = templatefile("./docker-script.sh", {
     nexus-ip = var.nexus-ip,
     newrelic-license-key = var.newrelic-user-licence,
-    acct-id = var.newrelic-acct-id,
-    nexus-username = var.nexus-username,
-    nexus-password = var.nexus-password,
-    repository = var.repository,
-    image-name = var.image-name,
-    container-name = var.container-name,
-    host-port = var.host-port,
-    container-port = var.container-port
+    newrelic-account-id = var.newrelic-acct-id,
+    newrelic-region = var.newrelic-region
+
   })
 }
 
 #Create AutoScaling Group
 resource "aws_autoscaling_group" "stage-asg" {
-  name                      = "stage-asg"
+  name                      = var.stage-asg-name
   desired_capacity          = 2
   max_size                  = 5
   min_size                  = 1
@@ -31,11 +26,10 @@ resource "aws_autoscaling_group" "stage-asg" {
   target_group_arns         = var.tg-arn
   launch_template {
     id      = aws_launch_template.stage_lt.id
-    version = "$Latest"
   }
   tag {
     key                 = "Name"
-    value               = "stage-instance"
+    value               = var.stage-asg-name
     propagate_at_launch = true
   }
 }
