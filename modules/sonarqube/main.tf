@@ -5,7 +5,7 @@ resource  "aws_instance" "sonarqube" {
   vpc_security_group_ids      = [var.sonarqube-sg]
   subnet_id                   = var.subnet_id
   associate_public_ip_address = true
-  user_data                   = local.sonarqube_user_data
+  #user_data                   = local.sonarqube_user_data
   tags = {
     Name = var.sonarqube_server_name
   }
