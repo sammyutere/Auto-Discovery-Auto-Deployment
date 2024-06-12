@@ -126,5 +126,25 @@ module "stage-asg" {
 
 }
 
+module "route53" {
+  source    = "./module/route53"
+  domain_name  =""
+  jenkins_domain_name  =
+  jenkins_lb_dns_name  = module.jenkins.jenkins_dns_name
+  jenkins_lb_zone_id   = module.jenkins.jenkins_zone_id
+  nexus_domain_name  =
+  nexus_lb_dns_name  = module.nexus.nexus_dns_name
+  nexus_lb_zone_id   = module.nexus.nexus_zone_id
+  sonarqube_domain_name  =
+  sonarqube_lb_dns_name  = module.sonarqube.sonarqube_dns_name
+  sonarqube_lb_zone_id   = module.sonarqube.sonarqube_zone_id
+  prod_domain_name  =
+  prod_lb_dns_name  = module.prod.prod_dns_name
+  prod_lb_zone_id   = module.prod.prod_zone_id
+  stage_domain_name  =
+  stage_lb_dns_name  = module.stage.stage_dns_name
+  stage_lb_zone_id   = module.stage.stage_zone_id
+}
+
 
 
