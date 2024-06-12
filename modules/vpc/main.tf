@@ -1,14 +1,3 @@
-terraform {
-  backend "s3" {
-    bucket = "set19-remote-tf"
-    key = "set19/tfstate"
-    dynamodb_table = "petclinic"
-    region = "eu-west-3"
-    encrypt = true
-    profile ="set19"
-  }
-}
-
 resource "aws_vpc" "vpc" {
   cidr_block       = "10.0.0.0/16"
   instance_tenancy = "default"

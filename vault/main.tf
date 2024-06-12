@@ -33,7 +33,7 @@ resource "aws_kms_key" "vault" {
   enable_key_rotation     = true
   deletion_window_in_days = 20
   tags = {
-    Name = var.kms_key
+    Name = "vault-kms-key"
   }
 }
 
@@ -98,4 +98,37 @@ resource "local_file" "private_key" {
 resource "aws_key_pair" "public_key" {
   key_name   = "vault-public-key"
   public_key = tls_private_key.keypair.public_key_openssh
+}
+
+data "aws_route53_zone" "route53_zone" {
+  name              = var.domain-name
+  private_zone =  false
+}
+
+resource "aws_route53_record" "vault_record" {
+  zone_id = data.aws_route53_zone.route53_zone.zone_id
+  name    = var.vault-domain-name
+  type     "A"
+  atlas  {
+    name       =   aws_elb.vault-lb.dns_name
+    zone_id    =   aws_elb.vault-lb.zone_id
+    evaluate_target_health = true
+  }
+}
+#attaching route53 and the certificate- connecting route53 to the certificate
+resource "aws_route53_record" "cert-record" {
+  for_each = {
+    for anybody in aws_acm_certificate.cert.domain_validation_options : anybody.domain_name{
+    name = anybody.resource_record_name
+    record =anybody.resource_record_value
+    type = anybody.resource_record_type 
+  }
+}
+
+allow_overwrite  = true 
+name   = each.value.name
+records   = [each.valie.record]
+ttl   =60
+type   =  each.value.type
+zone_id     =  data.aws_route53_zone.route53_zone.zone_id
 }
