@@ -3,3 +3,11 @@ variable "ansible_subnet" {}
 variable "pub_key" {}
 variable "ansible_sg" {}
 variable "ansible_name" {}
+variable "stage-playbook" {}
+variable "prod-playbook" {}
+variable "stage-discovery-script" {}
+variable "prod-discovery-script" {}
+variable "private_key" {}
+variable "nexus-ip" {}
+variable "newrelic-license-key" {}
+variable "newrelic-acct-id" {}
