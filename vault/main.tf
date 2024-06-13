@@ -15,7 +15,7 @@ terraform {
 }
 
 resource "aws_instance" "vault_server" {
-  ami           = var.ami-ubuntu
+  ami           = "ami-00ac45f3035ff009e"
   instance_type = "t2.medium"
   iam_instance_profile = aws_iam_instance_profile.ec2_instance_profile.name
   key_name               = aws_key_pair.public_key.id
@@ -101,24 +101,24 @@ resource "aws_key_pair" "public_key" {
 }
 
 data "aws_route53_zone" "route53_zone" {
-  name              = var.domain-name
+  name              = "greatminds.sbs"
   private_zone =  false
 }
 
 resource "aws_route53_record" "vault_record" {
   zone_id = data.aws_route53_zone.route53_zone.zone_id
-  name    = var.vault-domain-name
-  type     "A"
-  atlas  {
-    name       =   aws_elb.vault-lb.dns_name
-    zone_id    =   aws_elb.vault-lb.zone_id
+  name    = "vault.greatminds.sbs"
+  type    = "A"
+  alias  {
+    name       =   aws_elb.vault_lb.dns_name
+    zone_id    =   aws_elb.vault_lb.zone_id
     evaluate_target_health = true
   }
 }
 #attaching route53 and the certificate- connecting route53 to the certificate
 resource "aws_route53_record" "cert-record" {
   for_each = {
-    for anybody in aws_acm_certificate.cert.domain_validation_options : anybody.domain_name{
+    for anybody in aws_acm_certificate.cert.domain_validation_options : anybody.domain_name => {
     name = anybody.resource_record_name
     record =anybody.resource_record_value
     type = anybody.resource_record_type 
@@ -131,4 +131,49 @@ records   = [each.valie.record]
 ttl   =60
 type   =  each.value.type
 zone_id     =  data.aws_route53_zone.route53_zone.zone_id
+}
+
+resource "aws_elb" "vault_lb" {
+  name            = "vault-lb"
+  availability_zones = ["eu-west-3a", "eu-west-3b"]
+  security_groups = [aws_security_group.vault-sg.id]
+  listener {
+    instance_port      = 8200
+    instance_protocol  = "http"
+    lb_port            = 443
+    lb_protocol        = "https"
+    ssl_certificate_id = aws_acm_certificate.acm-cert.arn
+  }
+
+  health_check {
+    healthy_threshold   = 2
+    unhealthy_threshold = 2
+    timeout             = 3
+    target              = "TPC:8200"
+    interval            = 30
+  }
+
+    instances                   = [aws_instance.vault_server.id]
+    cross_zone_load_balancing   = true
+    idle_timeout                = 400
+    connection_draining         = true
+    connection_draining_timeout = 400
+
+    tags = {
+      Name = "vault-elb"
+  }
+}
+
+resource "aws_acm_certificate" "acm-cert" {
+  domain_name = "greatminds.sbs"
+  subject_alternative_names = "*.greatminds.sbs"
+  validation_method = "DNS"
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
+resource "aws_acm_certificate_validation" "valid-acm-cert" {
+  certificate_arn = aws_acm_certificate.acm-cert.arn
+  validation_record_fqdns = [for record in aws_aws_route53_record.cert-record : record.fqdn] 
 }
