@@ -20,7 +20,10 @@ resource "aws_instance" "vault_server" {
   iam_instance_profile = aws_iam_instance_profile.ec2_instance_profile.name
   key_name               = aws_key_pair.public_key.id
   vpc_security_group_ids = [aws_security_group.vault-sg.id]
-  # user_data              = local.vault_user_data
+  user_data              = templatefile("./vault-script.sh", {
+    var1 = aws_kms_key.vault.id  
+    var2 = "eu-west-3"
+  })
 
   tags = {
     Name = "vault_server"

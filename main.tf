@@ -158,6 +158,8 @@ module "sonarqube" {
   key_name = "pet_adoption"
   sonarqube-sg = module.securitygroup.sonarqube-sg
   subnet_id = module.vpc.pubsn1_id
+  subnet-elb = [module.vpc.pubsn1_id, module.vpc.pubsn2_id]
+  cert-arn = data.aws_acm_certificate.acm-cert.arn
 }
 
 module "prod-lb" {
