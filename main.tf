@@ -1,6 +1,13 @@
 locals {
   name = "pet-auto"
 }
+
+data "aws_acm_certificate" "acm-cert" {
+  domain = "greatminds.sbs" 
+  types       = ["AMAZON_ISSUED"]
+  most_recent = true
+}
+
 module "vpc" {
   source      = "./modules/vpc"
   avz1        = "eu-west-3a"
@@ -33,7 +40,8 @@ module "nexus" {
   nexus_sg     = module.securitygroup.nexus-sg
   nexus_name   = "${local.name}-nexus"
   subnet-elb = [module.vpc.pubsn1_id, module.vpc.pubsn2_id]
-  cert-arn = ""
+  cert-arn = data.aws_acm_certificate.acm-cert.arn
+     
 }
 module "jenkins" {
   source       = "./modules/jenkins"
@@ -43,11 +51,11 @@ module "jenkins" {
   key-name     = module.keypair.pub_key_pair_id
   jenkins-name = "${local.name}-jenkins"
   nexus-ip     = module.nexus.nexus_ip
-  cert-arn     = ""
+  cert-arn     = data.aws_acm_certificate.acm-cert.arn
   subnet-elb   = [module.vpc.pubsn1_id, module.vpc.pubsn2_id]
-  nr-key       = ""
-  nr-acc-id    = ""
-  nr-region    = ""
+  nr-key       = "NRAK-W7PYXA013NC8GAFZL30HD58HOUO"
+  nr-acc-id    = "4456322"
+  nr-region    = "EU"
 }
 
 module "rds" {
@@ -81,6 +89,8 @@ module "sonarqube" {
   key_name              = module.keypair.pub_key_pair_id
   sonarqube-sg          = module.securitygroup.sonarqube-sq
   subnet_id             = module.vpc.pubsn1_id
+  subnet-elb = [module.vpc.pubsn1_id, module.vpc.pubsn2_id]
+  cert-arn = data.aws_acm_certificate.acm-cert.arn
 }
 
 # data "vault_generic_secret" "vault_secret" {
@@ -88,75 +98,68 @@ module "sonarqube" {
 # }
 
 module "prod-asg" {
-  source                = "./modules/prod-asg"
+  source                = "./modules/prodasg"
   ami                   = "ami-05f804247228852a3"
-  asg-sg                = module.securitygroup.asg-sq
+  asg-sg                = module.securitygroup.asg-sg
   pub-key               = module.keypair.pub_key_pair_id
   nexus-ip              = module.nexus.nexus_ip
-  newrelic-user-licence = "NRAK-ZTC5BPSBEBNDDQ1AEN6TY2KWOOJ"
-  newrelic-acct-id      = "4155533"
-  nexus-username        = "admin"
-  nexus-password        = "admin123"
-  repository            = "nexus-repo"
-  image-name            = "${nexus-ip}:8085/petclinicapps"
-  container-name        = "appContainer"
-  host-port             = 8080
-  container-port        = 80
-  vpc-zone-identifier   = [aws_subnet.public-subnet1.id, aws_subnet.public-subnet2.id]
+  newrelic-user-licence = "NRAK-W7PYXA013NC8GAFZL30HD58HOUO"
+  newrelic-acct-id      = "4456322"
+  vpc-zone-identifier   = [module.vpc.pubsn1_id, module.vpc.pubsn2_id]
   prod-asg-policy-name  = "prod-asg-policy"
-  tg-arn                = [aws_lb_target_group.lb-tg.arn]
+  tg-arn                = module.prod-lb.tg-prod-arn
+  prod-asg-name         = "${local.name}-prod-asg"
+  newrelic-region       = "EU"
+
 
 }
 
 module "stage-asg" {
   source                = "./modules/stage-asg"
   ami                   = "ami-05f804247228852a3"
-  asg-sg                = module.securitygroup.asg-sq
+  asg-sg                = module.securitygroup.asg-sg
   pub-key               = module.keypair.pub_key_pair_id
   nexus-ip              = module.nexus.nexus_ip
-  newrelic-user-licence = "NRAK-ZTC5BPSBEBNDDQ1AEN6TY2KWOOJ"
-  newrelic-acct-id      = "4155533"
-  nexus-username        = "admin"
-  nexus-password        = "admin123"
-  repository            = "nexus-repo"
-  image-name            = "${nexus-ip}:8085/petclinicapps"
-  container-name        = "appContainer"
-  host-port             = 8080
-  container-port        = 80
-  vpc-zone-identifier   = [aws_subnet.public-subnet1.id, aws_subnet.public-subnet2.id]
+  newrelic-user-licence = "NRAK-W7PYXA013NC8GAFZL30HD58HOUO"
+  newrelic-acct-id      = "4456322"
+  vpc-zone-identifier   = [module.vpc.pubsn1_id, module.vpc.pubsn2_id]
   stage-asg-policy-name = "stage-asg-policy"
-  tg-arn                = [aws_lb_target_group.lb-tg.arn]
+  tg-arn                = module.stage-lb.tg-stage-arn
+  stage-asg-name        = "${local.name}-stage-asg"
+  newrelic-region       = "EU"
 
 }
 
 module "route53" {
   source    = "./module/route53"
-  domain_name  =""
-  jenkins_domain_name  =
+  domain_name  ="greatminds.sbs"
+  jenkins_domain_name  = "jenkins.greatminds.sbs"
   jenkins_lb_dns_name  = module.jenkins.jenkins_dns_name
   jenkins_lb_zone_id   = module.jenkins.jenkins_zone_id
-  nexus_domain_name  =
+  nexus_domain_name  = "nexus.greatminds.sbs"
   nexus_lb_dns_name  = module.nexus.nexus_dns_name
   nexus_lb_zone_id   = module.nexus.nexus_zone_id
-  sonarqube_domain_name  =
+  sonarqube_domain_name  = "sonarqube.greatminds.sbs"
   sonarqube_lb_dns_name  = module.sonarqube.sonarqube_dns_name
   sonarqube_lb_zone_id   = module.sonarqube.sonarqube_zone_id
-  prod_domain_name  =
+  prod_domain_name  = "prod.greatminds.sbs"
   prod_lb_dns_name  = module.prod.prod_dns_name
   prod_lb_zone_id   = module.prod.prod_zone_id
-  stage_domain_name  =
+  stage_domain_name  = "stage.greatminds.sbs"
   stage_lb_dns_name  = module.stage.stage_dns_name
   stage_lb_zone_id   = module.stage.stage_zone_id
 }
 
 module "sonarqube" {
   source = "./modules/sonarqube"
-  ami   = ""
+  ami   = "ami-00ac45f3035ff009e"
   sonarqube_server_name = "${local.name}-prvsn1"
   instance_type = "t2.medium"
   key_name = "pet_adoption"
-  sonarqube-sg = module.securitygroup.sonarqube-sq
-  subnet_id = ""
+  sonarqube-sg = module.securitygroup.sonarqube-sg
+  subnet_id = module.vpc.pubsn1_id
+  subnet-elb = [module.vpc.pubsn1_id, module.vpc.pubsn2_id]
+  cert-arn = data.aws_acm_certificate.acm-cert.arn
 }
 
 module "prod-lb" {
@@ -164,10 +167,10 @@ module "prod-lb" {
   port_http = 80
   port_https = 443
   name-alb-prod = "${local.name}-alb-prod"  
-  prod-sg = ""
-  subnet = ""
-  cert-arn = ""
-  vpc_id = ""
+  prod-sg = module.securitygroup.asg-sg
+  subnet = [module.vpc.pubsn1_id, module.vpc.pubsn2_id]
+  cert-arn = data.aws_acm_certificate.acm-cert.arn
+  vpc_id = module.vpc.vpc_id
 }
 
 module "stage-lb" {
@@ -175,16 +178,16 @@ module "stage-lb" {
   port_http = 80
   port_https = 443
   name-alb-stage = "${local.name}-alb-stage"  
-  stage-sg = ""
-  subnet = ""
-  cert-arn = ""
-  vpc_id = ""
+  stage-sg = module.securitygroup.asg-sg
+  subnet = [module.vpc.pubsn1_id, module.vpc.pubsn2_id]
+  cert-arn = data.aws_acm_certificate.acm-cert.arn
+  vpc_id = module.vpc.vpc_id
 }
 
 
 module "ansible" {
   source = "./modules/ansible"
-  red_hat = ""
+  red_hat = "ami-0574a94188d1b84a1"
   ansible_subnet = module.vpc.prvsn1_id
   pub_key = module.keypair.pub_key_pair_id
   ansible_sg = module.securitygroup.ansible-sq
