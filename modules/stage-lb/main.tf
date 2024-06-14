@@ -3,7 +3,7 @@ resource "aws_lb" "alb-stage" {
   name                       = "asg-stage-alb"
   internal                   = false
   load_balancer_type         = "application"
-  security_groups            = var.stage-sg
+  security_groups            = [var.stage-sg]
   subnets                    = var.subnet
   enable_deletion_protection = false
 

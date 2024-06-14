@@ -1,6 +1,6 @@
 provider "aws" {
   region = "eu-west-3"
-  profile = "set19"
+  profile = "team19"
 }
 
 resource "aws_s3_bucket" "s3-set19" {

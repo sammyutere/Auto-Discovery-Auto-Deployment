@@ -47,7 +47,7 @@ module "jenkins" {
   source       = "./modules/jenkins"
   ami-redhat   = "ami-05f804247228852a3"
   subnet-id    = module.vpc.prvsn1_id
-  jenkins-sg   = module.securitygroup.Jenkins-sq
+  jenkins-sg   = module.securitygroup.Jenkins-sg
   key-name     = module.keypair.pub_key_pair_id
   jenkins-name = "${local.name}-jenkins"
   nexus-ip     = module.nexus.nexus_ip
@@ -64,9 +64,9 @@ module "rds" {
   rds_subnet_id = [module.vpc.pubsn1_id, module.vpc.pubsn2_id]
   db_subtag     = "${local.name}-db_subgroup"
   db_name       = "petclinic"
-  db_username   = "admin"    #data.vault_generic_secret.vault_secret.data["username"]
-  db_password   = "admin123" #data.vault_generic_secret.vault_secret.data["password"]
-  rds_sg        = [module.securitygroup.rds-sq]
+  db_username   = data.vault_generic_secret.vault_secret.data["username"]
+  db_password   = data.vault_generic_secret.vault_secret.data["password"]
+  rds_sg        = [module.securitygroup.rds-sg]
 }
 
 # Creating bastion host
@@ -78,24 +78,24 @@ module "bastion" {
   instance_type = "t2.micro"
   private-key   = module.keypair.private_key_pem
   bastion-name  = "${local.name}-bastion-host"
-  bastion-sg    = module.securitygroup.bastion-sq
+  bastion-sg    = module.securitygroup.bastion-sg
 }
 
 module "sonarqube" {
   source                = "./modules/sonarqube"
   ami                   = "ami-00ac45f3035ff009e"
-  sonarqube_server_name = "${local.name}-prvsn1"
+  sonarqube_server_name = "${local.name}-sonar-server"
   instance_type         = "t2.medium"
   key_name              = module.keypair.pub_key_pair_id
-  sonarqube-sg          = module.securitygroup.sonarqube-sq
+  sonarqube-sg          = module.securitygroup.sonarqube-sg
   subnet_id             = module.vpc.pubsn1_id
   subnet-elb = [module.vpc.pubsn1_id, module.vpc.pubsn2_id]
   cert-arn = data.aws_acm_certificate.acm-cert.arn
 }
 
-# data "vault_generic_secret" "vault_secret" {
-#   path = secret/database
-# }
+data "vault_generic_secret" "vault_secret" {
+  path = "secret/database"
+}
 
 module "prod-asg" {
   source                = "./modules/prodasg"
@@ -131,7 +131,7 @@ module "stage-asg" {
 }
 
 module "route53" {
-  source    = "./module/route53"
+  source    = "./modules/route53"
   domain_name  ="greatminds.sbs"
   jenkins_domain_name  = "jenkins.greatminds.sbs"
   jenkins_lb_dns_name  = module.jenkins.jenkins_dns_name
@@ -143,23 +143,11 @@ module "route53" {
   sonarqube_lb_dns_name  = module.sonarqube.sonarqube_dns_name
   sonarqube_lb_zone_id   = module.sonarqube.sonarqube_zone_id
   prod_domain_name  = "prod.greatminds.sbs"
-  prod_lb_dns_name  = module.prod.prod_dns_name
-  prod_lb_zone_id   = module.prod.prod_zone_id
+  prod_lb_dns_name  = module.prod-lb.alb-prod-dns
+  prod_lb_zone_id   = module.prod-lb.alb-prod-zoneid
   stage_domain_name  = "stage.greatminds.sbs"
-  stage_lb_dns_name  = module.stage.stage_dns_name
-  stage_lb_zone_id   = module.stage.stage_zone_id
-}
-
-module "sonarqube" {
-  source = "./modules/sonarqube"
-  ami   = "ami-00ac45f3035ff009e"
-  sonarqube_server_name = "${local.name}-prvsn1"
-  instance_type = "t2.medium"
-  key_name = "pet_adoption"
-  sonarqube-sg = module.securitygroup.sonarqube-sg
-  subnet_id = module.vpc.pubsn1_id
-  subnet-elb = [module.vpc.pubsn1_id, module.vpc.pubsn2_id]
-  cert-arn = data.aws_acm_certificate.acm-cert.arn
+  stage_lb_dns_name  = module.stage-lb.alb-stage-dns
+  stage_lb_zone_id   = module.stage-lb.alb-stage-zoneid
 }
 
 module "prod-lb" {
@@ -190,7 +178,7 @@ module "ansible" {
   red_hat = "ami-0574a94188d1b84a1"
   ansible_subnet = module.vpc.prvsn1_id
   pub_key = module.keypair.pub_key_pair_id
-  ansible_sg = module.securitygroup.ansible-sq
+  ansible_sg = module.securitygroup.ansible-sg
   ansible_name = "${local.name}-ansible" 
   stage-playbook = "${path.root}/modules/ansible/stage-playbook.yaml"
   prod-playbook = "${path.root}/modules/ansible/prod-playbook.yaml"

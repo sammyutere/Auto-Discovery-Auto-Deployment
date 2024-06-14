@@ -1,17 +1,6 @@
 provider "aws" {
   region = "eu-west-3"
-  profile = "set19"
-}
-
-terraform {
-  backend "s3" {
-    bucket = "set19-remote-tf"
-    key = "set19-vault/tfstate"
-    dynamodb_table = "petclinic"
-    region = "eu-west-3"
-    encrypt = true
-    profile ="set19"
-  }
+  profile = "team19"
 }
 
 resource "aws_instance" "vault_server" {
@@ -21,8 +10,8 @@ resource "aws_instance" "vault_server" {
   key_name               = aws_key_pair.public_key.id
   vpc_security_group_ids = [aws_security_group.vault-sg.id]
   user_data              = templatefile("./vault-script.sh", {
-    var1 = aws_kms_key.vault.id  
-    var2 = "eu-west-3"
+    var1 = "eu-west-3"
+    var2 = aws_kms_key.vault.id
   })
 
   tags = {
@@ -33,8 +22,7 @@ resource "aws_instance" "vault_server" {
 #create aws KMS
 resource "aws_kms_key" "vault" {
   description             = "KMS key"
-  enable_key_rotation     = true
-  deletion_window_in_days = 20
+  deletion_window_in_days = 10
   tags = {
     Name = "vault-kms-key"
   }
@@ -118,10 +106,23 @@ resource "aws_route53_record" "vault_record" {
     evaluate_target_health = true
   }
 }
+resource "aws_acm_certificate" "acm-cert" {
+  domain_name = "greatminds.sbs"
+  subject_alternative_names = ["*.greatminds.sbs"]
+  validation_method = "DNS"
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
+resource "aws_acm_certificate_validation" "valid-acm-cert" {
+  certificate_arn = aws_acm_certificate.acm-cert.arn
+  validation_record_fqdns = [for record in aws_route53_record.cert-record : record.fqdn] 
+}
 #attaching route53 and the certificate- connecting route53 to the certificate
 resource "aws_route53_record" "cert-record" {
   for_each = {
-    for anybody in aws_acm_certificate.cert.domain_validation_options : anybody.domain_name => {
+    for anybody in aws_acm_certificate.acm-cert.domain_validation_options : anybody.domain_name => {
     name = anybody.resource_record_name
     record =anybody.resource_record_value
     type = anybody.resource_record_type 
@@ -130,7 +131,7 @@ resource "aws_route53_record" "cert-record" {
 
 allow_overwrite  = true 
 name   = each.value.name
-records   = [each.valie.record]
+records   = [each.value.record]
 ttl   =60
 type   =  each.value.type
 zone_id     =  data.aws_route53_zone.route53_zone.zone_id
@@ -152,7 +153,7 @@ resource "aws_elb" "vault_lb" {
     healthy_threshold   = 2
     unhealthy_threshold = 2
     timeout             = 3
-    target              = "TPC:8200"
+    target              = "TCP:8200"
     interval            = 30
   }
 
@@ -167,16 +168,3 @@ resource "aws_elb" "vault_lb" {
   }
 }
 
-resource "aws_acm_certificate" "acm-cert" {
-  domain_name = "greatminds.sbs"
-  subject_alternative_names = "*.greatminds.sbs"
-  validation_method = "DNS"
-  lifecycle {
-    create_before_destroy = true
-  }
-}
-
-resource "aws_acm_certificate_validation" "valid-acm-cert" {
-  certificate_arn = aws_acm_certificate.acm-cert.arn
-  validation_record_fqdns = [for record in aws_aws_route53_record.cert-record : record.fqdn] 
-}
