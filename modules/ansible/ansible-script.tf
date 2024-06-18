@@ -30,7 +30,7 @@ sudo echo "${file(var.stage-playbook)}" >> /etc/ansible/stage-playbook.yaml
 sudo echo "${file(var.prod-playbook)}" >> /etc/ansible/prod-playbook.yaml
 sudo echo "${file(var.stage-discovery-script)}" >> /etc/ansible/stage-discovery-script.sh
 sudo echo "${file(var.prod-discovery-script)}" >> /etc/ansible/prod-discovery-script.sh
-sudo echo "${file(var.private_key)}" >> /home/ec2-user/.ssh/id_rsa
+sudo echo "${(var.private_key)}" >> /home/ec2-user/.ssh/id_rsa
 sudo bash 'echo "NEXUS_IP:${var.nexus-ip}:8085" > /etc/ansible/ansible_vars_file.yaml'
 #Give permission to copied file
 sudo chown -R ec2-user:ec2-user /etc/ansible

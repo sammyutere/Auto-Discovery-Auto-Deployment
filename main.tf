@@ -58,6 +58,10 @@ module "jenkins" {
   nr-region    = "EU"
 }
 
+data "vault_generic_secret" "vault_secret" {
+  path = "secret/database"
+}
+
 module "rds" {
   source        = "./modules/rds"
   rds_subgroup  = "rds_subgroup"
@@ -93,9 +97,6 @@ module "sonarqube" {
   cert-arn = data.aws_acm_certificate.acm-cert.arn
 }
 
-data "vault_generic_secret" "vault_secret" {
-  path = "secret/database"
-}
 
 module "prod-asg" {
   source                = "./modules/prodasg"

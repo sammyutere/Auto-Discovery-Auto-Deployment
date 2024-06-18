@@ -4,13 +4,13 @@ resource "aws_launch_template" "prod_lt" {
   instance_type          = "t2.medium"
   vpc_security_group_ids = [var.asg-sg]
   key_name               = var.pub-key
-  user_data = templatefile("./modules/ProdASG/docker-script.sh", {
+  user_data = base64encode(templatefile("./modules/ProdASG/docker-script.sh", {
     nexus-ip = var.nexus-ip,
     newrelic-license-key = var.newrelic-user-licence,
     newrelic-account-id = var.newrelic-acct-id,
     newrelic-region = var.newrelic-region
 
-  })
+  }))
 }
 
 #Create AutoScaling Group

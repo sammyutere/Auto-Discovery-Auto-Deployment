@@ -5,6 +5,6 @@
 #     dynamodb_table = "petclinic"
 #     region         = "eu-west-3"
 #     encrypt        = true
-#     # profile        = "set19"
+#     # profile        = "team19"
 #   }
 # }
