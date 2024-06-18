@@ -3,7 +3,7 @@ resource "aws_lb" "alb-prod" {
   name                       = "asg-prod-alb"
   internal                   = false
   load_balancer_type         = "application"
-  security_groups            = var.prod-sg
+  security_groups            = [var.prod-sg]
   subnets                    = var.subnet
   enable_deletion_protection = false
 

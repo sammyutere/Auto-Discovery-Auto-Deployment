@@ -27,7 +27,7 @@ resource "aws_elb" "sonarqube_lb" {
     healthy_threshold   = 2
     unhealthy_threshold = 2
     timeout             = 3
-    target              = "TPC:8080"
+    target              = "TCP:8080"
     interval            = 30
   }
 
