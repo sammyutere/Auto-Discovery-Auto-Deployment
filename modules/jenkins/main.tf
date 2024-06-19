@@ -11,33 +11,62 @@ resource  "aws_instance" "jenkins_server" {
   }
 }
   
-resource "aws_elb" "jenkins_lb" {
-  name            = "jenkins-lb"
-  subnets         = var.subnet-elb 
-  security_groups = [var.jenkins-sg]
-  listener {
-    instance_port      = 8080
-    instance_protocol  = "http"
-    lb_port            = 443
-    lb_protocol        = "https"
-    ssl_certificate_id = var.cert-arn
+resource "aws_lb" "alb-jenkins" {
+  name                       = "jenkins-alb"
+  internal                   = false
+  load_balancer_type         = "application"
+  security_groups            = [var.jenkins-sg]
+  subnets                    = var.subnet-elb
+  enable_deletion_protection = false
+
+  tags = {
+    Name = "jenkins-alb"
   }
+}
+
+
+#Creating Load Balancer Listener for https
+resource "aws_lb_listener" "jalb_lsnr-https" {
+  load_balancer_arn = aws_lb.alb-jenkins.arn
+  port              = 443
+  protocol          = "HTTPS"
+  ssl_policy        = "ELBSecurityPolicy-2016-08"
+  certificate_arn   = var.cert-arn
+
+  default_action {
+    type             = "forward"
+      target_group_arn = aws_lb_target_group.jenlb-tg.arn
+  }
+}
+
+# Creating Load Balancer Listener for http
+resource "aws_lb_listener" "lb_lsnr-http" {
+  load_balancer_arn = aws_lb.alb-jenkins.arn
+  port              = 80
+  protocol          = "HTTP"
+
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.jenlb-tg.arn
+  }
+}
+
+# Creating Load Balancer Target Group for ASG stage
+resource "aws_lb_target_group" "jenlb-tg" {
+  name     = "jenkins-tg"
+  port     = 8080
+  protocol = "HTTP"
+  vpc_id   = var.vpc_id
 
   health_check {
-    healthy_threshold   = 2
-    unhealthy_threshold = 2
-    timeout             = 3
-    target              = "TCP:8080"
     interval            = 30
+    timeout             = 3
+    healthy_threshold   = 3
+    unhealthy_threshold = 5
   }
-
-    instances                   = [aws_instance.jenkins_server.id]
-    cross_zone_load_balancing   = true
-    idle_timeout                = 400
-    connection_draining         = true
-    connection_draining_timeout = 400
-
-    tags = {
-      Name = "jenkins-elb"
-  }
+}
+resource "aws_lb_target_group_attachment" "tg_att" {
+  target_group_arn = aws_lb_target_group.jenlb-tg.arn
+  target_id        = aws_instance.jenkins_server.id
+  port             = 8080
 }

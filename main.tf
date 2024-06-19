@@ -34,7 +34,7 @@ module "keypair" {
 }
 module "nexus" {
   source       = "./modules/nexus"
-  red_hat      = "ami-05f804247228852a3"
+  red_hat      = "ami-0574a94188d1b84a1"
   nexus_subnet = module.vpc.pubsn1_id
   pub_key      = module.keypair.pub_key_pair_id
   nexus_sg     = module.securitygroup.nexus-sg
@@ -45,7 +45,8 @@ module "nexus" {
 }
 module "jenkins" {
   source       = "./modules/jenkins"
-  ami-redhat   = "ami-05f804247228852a3"
+  ami-redhat   = "ami-0574a94188d1b84a1"
+  vpc_id = module.vpc.vpc_id
   subnet-id    = module.vpc.prvsn1_id
   jenkins-sg   = module.securitygroup.Jenkins-sg
   key-name     = module.keypair.pub_key_pair_id
@@ -100,7 +101,7 @@ module "sonarqube" {
 
 module "prod-asg" {
   source                = "./modules/prodasg"
-  ami                   = "ami-05f804247228852a3"
+  ami                   = "ami-0574a94188d1b84a1"
   asg-sg                = module.securitygroup.asg-sg
   pub-key               = module.keypair.pub_key_pair_id
   nexus-ip              = module.nexus.nexus_ip
@@ -117,7 +118,7 @@ module "prod-asg" {
 
 module "stage-asg" {
   source                = "./modules/stage-asg"
-  ami                   = "ami-05f804247228852a3"
+  ami                   = "ami-0574a94188d1b84a1"
   asg-sg                = module.securitygroup.asg-sg
   pub-key               = module.keypair.pub_key_pair_id
   nexus-ip              = module.nexus.nexus_ip
@@ -135,8 +136,8 @@ module "route53" {
   source    = "./modules/route53"
   domain_name  ="greatminds.sbs"
   jenkins_domain_name  = "jenkins.greatminds.sbs"
-  jenkins_lb_dns_name  = module.jenkins.jenkins_dns_name
-  jenkins_lb_zone_id   = module.jenkins.jenkins_zone_id
+  jenkins_lb_dns_name  = module.jenkins.alb-jen-dns
+  jenkins_lb_zone_id   = module.jenkins.alb-jen-zoneid
   nexus_domain_name  = "nexus.greatminds.sbs"
   nexus_lb_dns_name  = module.nexus.nexus_dns_name
   nexus_lb_zone_id   = module.nexus.nexus_zone_id

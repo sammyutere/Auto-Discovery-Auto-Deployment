@@ -1,6 +1,6 @@
 provider "aws" {
   region = "eu-west-3"
-  profile = "team19"
+  profile = "lead"
 }
 
 resource "aws_s3_bucket" "s3-set19" {
@@ -10,7 +10,7 @@ resource "aws_s3_bucket" "s3-set19" {
   tags = {
     Name        = "set19-remote-tf"
   }
-}
+} 
 
 resource "aws_dynamodb_table" "dynamodb-tfstate" {
   name           = "petclinic"

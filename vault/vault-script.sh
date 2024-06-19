@@ -99,3 +99,53 @@ sudo systemctl enable vault
 
 # Set hostname to Vault
 sudo hostnamectl set-hostname Vault
+
+#copy keypair
+echo "${keypair}" >> /home/ubuntu/.ssh/id_rsa
+chmod 400 /home/ubuntu/.ssh/id_rsa
+sudo chown ubuntu:ubuntu /home/ubuntu/.ssh/id_rsa
+
+sudo apt install jq
+# #Code to setup and configure vault
+sudo tee /home/ubuntu/vault_setup.sh > /dev/null <<'EOT'
+#!/bin/bash
+
+# Function to generate a random password
+generate_random_password() {
+    openssl rand -base64 16
+}
+
+# Function to run Vault commands on the remote server
+run_vault_commands() {
+    # Initialize Vault
+    init_output=$(vault operator init -format=json)
+
+    # Capture the root token
+    root_token=$(echo $init_output | jq -r '.root_token')
+
+    # Save the root token to a file (optional, for reference)
+    echo $root_token > root_token.txt
+
+    # Log in to Vault using the root token
+    vault login $root_token
+
+    # Enable KV secrets engine at the specified path
+    vault secrets enable -path=secret/ kv
+
+    # Generate a random password
+    random_password=$(openssl rand -base64 16)
+
+    # Store username and random password in the KV secrets engine
+    vault kv put secret/database username=admin password=$random_password
+
+    echo "Vault setup completed successfully with a random password."
+    echo "Generated random password: $random_password"
+}
+
+# Run the function to SSH into the Vault server and execute the Vault commands
+run_vault_commands
+
+EOT
+
+sudo chmod +x /home/ubuntu/vault_setup.sh
+sudo chown ubuntu:ubuntu /home/ubuntu/vault_setup.sh

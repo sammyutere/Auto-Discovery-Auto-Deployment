@@ -1,6 +1,6 @@
 provider "aws" {
   region = "eu-west-3"
-  profile = "team19"
+  profile = "lead"
 }
 
 resource "aws_instance" "vault_server" {
@@ -12,13 +12,39 @@ resource "aws_instance" "vault_server" {
   user_data              = templatefile("./vault-script.sh", {
     var1 = "eu-west-3"
     var2 = aws_kms_key.vault.id
+    keypair = tls_private_key.keypair.private_key_pem
   })
-
+  provisioner "local-exec" {
+    when    = destroy
+    command = "rm -f ./root_token.txt"
+  }
   tags = {
     Name = "vault_server"
   }
 }
+# resource "time_sleep" "vault-hold" {
+#   depends_on = [ aws_instance.vault_server ]
+#   create_duration = "120s"
+# }
+# resource "null_resource" "credentials" {
+#   depends_on = [time_sleep.vault-hold]
+    
+#   provisioner "remote-exec" {
+#     inline = [
+#       "sleep 20",
+#       "sudo /home/ubuntu/vault_setup.sh",
+#       "scp ubuntu@${aws_instance.vault_server.public_ip}:/home/ubuntu/root_token.txt ./"
+#     ]
 
+#     connection {
+#       type        = "ssh"
+#       user        = "ubuntu"
+#       private_key = tls_private_key.keypair.private_key_pem
+#       host        = aws_instance.vault_server.public_ip
+#     }
+#   }
+
+# }
 #create aws KMS
 resource "aws_kms_key" "vault" {
   description             = "KMS key"

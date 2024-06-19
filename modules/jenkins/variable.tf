@@ -9,3 +9,4 @@ variable "subnet-elb" {}
 variable "nr-key" {}
 variable "nr-acc-id" {}
 variable "nr-region" {}
+variable "vpc_id" {}
