@@ -16,9 +16,9 @@ resource "aws_dynamodb_table" "dynamodb-tfstate" {
   name           = "petclinic"
   read_capacity  = 10
   write_capacity = 10
-  hash_key       = "LockId"
+  hash_key       = "LockID"
   attribute {
-    name = "LockId"
+    name = "LockID"
     type = "S"
   }
 

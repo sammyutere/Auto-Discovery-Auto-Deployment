@@ -14,9 +14,9 @@ resource "aws_lb" "alb-stage" {
 
 
 #Creating Load Balancer Listener for https
-resource "aws_lb_listener" "lb_lsnr-http" {
+resource "aws_lb_listener" "lb_lsnr-https" {
   load_balancer_arn = aws_lb.alb-stage.arn
-  port              = var.port_http
+  port              = var.port_https
   protocol          = "HTTPS"
   ssl_policy        = "ELBSecurityPolicy-2016-08"
   certificate_arn   = var.cert-arn
@@ -28,10 +28,10 @@ resource "aws_lb_listener" "lb_lsnr-http" {
 }
 
 # Creating Load Balancer Listener for http
-resource "aws_lb_listener" "lb_lsnr-https" {
+resource "aws_lb_listener" "lb_lsnr-http" {
   load_balancer_arn = aws_lb.alb-stage.arn
-  port              = var.port_https
-  protocol          = "HTTPS"
+  port              = var.port_http
+  protocol          = "HTTP"
 
   default_action {
     type             = "forward"

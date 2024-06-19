@@ -3,7 +3,7 @@ provider "aws" {
   profile = "team19"
 }
 provider "vault" {
-  token = "s.CgXvNOF5ISqag3aBuZj0FyFK"
+  token = "s.FYiF9BZKEvDkBXZoAaxDx0ht"
   address = "https://vault.greatminds.sbs"
   
 }
