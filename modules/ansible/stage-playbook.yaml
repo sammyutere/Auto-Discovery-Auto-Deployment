@@ -14,7 +14,7 @@
       command: docker rmi \"{{ NEXUS_IP }}\"/petclinicapps
       ignore_errors: yes
     - name: Pull docker image from nexus and create a container
-      shell: >
+      shell: |
         sudo su -c \"docker login --username=admin --password=admin123 {{
         NEXUS_IP}}\" ec2-user
 
