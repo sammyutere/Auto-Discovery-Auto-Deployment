@@ -2,7 +2,7 @@
 - hosts: webservers
   become: true
   vars_files:
-    - ansible_vars_file.yaml
+    - ansible_vars_file.yml
   tasks:
     - name: Stop any container running
       command: docker stop appContainer
@@ -15,9 +15,6 @@
       ignore_errors: yes
     - name: Pull docker image from nexus and create a container
       shell: |
-        sudo su -c \"docker login --username=admin --password=admin123 {{
-        NEXUS_IP}}\" ec2-user
-
+        sudo su -c \"docker login --username=admin --password=admin123 {{NEXUS_IP}}\" ec2-user
         sudo su -c \"docker pull \"{{ NEXUS_IP }}\"/petclinicapps\" ec2-user
-
         sudo su -c \"docker run -it -d --name appContainer -p 8080:8080 \"{{ NEXUS_IP }}\"/petclinicapps\" ec2-user
