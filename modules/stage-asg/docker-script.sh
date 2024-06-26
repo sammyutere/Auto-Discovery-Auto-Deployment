@@ -1,33 +1,33 @@
 #!/bin/bash
- 
+
 #update system, install Docker and its dependencies, start Docker service
 sudo yum update -y
 sudo yum upgrade -y
 sudo yum install -y yum-utils
 sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
 sudo yum install docker-ce -y
- 
- 
- 
+
+
+
 #add a registry to the Docker daemon configuration to allow insecure communication (without TLS verification) with a Docker registry on port 8085
 sudo cat <<EOT>> /etc/docker/daemon.json
   {
     "insecure-registries" : ["${nexus-ip}:8085"]
   }
 EOT
- 
+
 #Starts the Docker service and enables it to run on boot.
 #Add the ec2-user to the docker group, allowing them to run Docker commands.
 sudo service docker start
 sudo systemctl start docker
 sudo systemctl enable docker
 sudo usermod -aG docker ec2-user
- 
+
 #create a shell script that manages a Docker container on the EC2 instance, pulling updates from a Nexus registry
 sudo mkdir /home/ec2-user/scripts
 cat << EOF > "/home/ec2-user/scripts/script.sh"
 #!/bin/bash
- 
+
 set -x
  
 #Define Variables

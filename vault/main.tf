@@ -22,29 +22,8 @@ resource "aws_instance" "vault_server" {
     Name = "vault_server"
   }
 }
-# resource "time_sleep" "vault-hold" {
-#   depends_on = [ aws_instance.vault_server ]
-#   create_duration = "120s"
-# }
-# resource "null_resource" "credentials" {
-#   depends_on = [time_sleep.vault-hold]
-    
-#   provisioner "remote-exec" {
-#     inline = [
-#       "sleep 20",
-#       "sudo /home/ubuntu/vault_setup.sh",
-#       "scp ubuntu@${aws_instance.vault_server.public_ip}:/home/ubuntu/root_token.txt ./"
-#     ]
 
-#     connection {
-#       type        = "ssh"
-#       user        = "ubuntu"
-#       private_key = tls_private_key.keypair.private_key_pem
-#       host        = aws_instance.vault_server.public_ip
-#     }
-#   }
 
-# }
 #create aws KMS
 resource "aws_kms_key" "vault" {
   description             = "KMS key"
