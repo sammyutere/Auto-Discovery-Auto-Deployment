@@ -124,7 +124,7 @@ run_vault_commands() {
     root_token=$(echo $init_output | jq -r '.root_token')
 
     # Save the root token to a file (optional, for reference)
-    echo $root_token > root_token.txt
+    echo $root_token > /home/ubuntu/root_token.txt
 
     # Log in to Vault using the root token
     vault login $root_token
@@ -149,3 +149,10 @@ EOT
 
 sudo chmod +x /home/ubuntu/vault_setup.sh
 sudo chown ubuntu:ubuntu /home/ubuntu/vault_setup.sh
+
+# SSH into the Vault server and execute the Vault setup script below
+
+# /home/ubuntu/vault_setup.sh
+
+# run this command on the terminal to copy over the root token from the server to your local machine
+# scp -i {var.ssh_key} -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null {var.ssh_user}@{aws_instance.vault_server.public_ip}:root_token.txt .

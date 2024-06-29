@@ -66,7 +66,7 @@ data "vault_generic_secret" "vault_secret" {
 module "rds" {
   source        = "./modules/rds"
   rds_subgroup  = "rds_subgroup"
-  rds_subnet_id = [module.vpc.pubsn1_id, module.vpc.pubsn2_id]
+  rds_subnet_id = [module.vpc.prvsn1_id, module.vpc.prvsn2_id]
   db_subtag     = "${local.name}-db_subgroup"
   db_name       = "petclinic"
   db_username   = data.vault_generic_secret.vault_secret.data["username"]
@@ -107,7 +107,7 @@ module "prod-asg" {
   nexus-ip              = module.nexus.nexus_ip
   newrelic-user-licence = "NRAK-W7PYXA013NC8GAFZL30HD58HOUO"
   newrelic-acct-id      = "4456322"
-  vpc-zone-identifier   = [module.vpc.pubsn1_id, module.vpc.pubsn2_id]
+  vpc-zone-identifier   =[module.vpc.prvsn1_id, module.vpc.prvsn2_id]
   prod-asg-policy-name  = "prod-asg-policy"
   tg-arn                = module.prod-lb.tg-prod-arn
   prod-asg-name         = "${local.name}-prod-asg"
@@ -124,7 +124,7 @@ module "stage-asg" {
   nexus-ip              = module.nexus.nexus_ip
   newrelic-user-licence = "NRAK-W7PYXA013NC8GAFZL30HD58HOUO"
   newrelic-acct-id      = "4456322"
-  vpc-zone-identifier   = [module.vpc.pubsn1_id, module.vpc.pubsn2_id]
+  vpc-zone-identifier   = [module.vpc.prvsn1_id, module.vpc.prvsn2_id]
   stage-asg-policy-name = "stage-asg-policy"
   tg-arn                = module.stage-lb.tg-stage-arn
   stage-asg-name        = "${local.name}-stage-asg"
