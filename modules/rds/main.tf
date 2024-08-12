@@ -7,7 +7,7 @@ resource "aws_db_subnet_group" "rds_subnet" {
     Name = var.db_subtag
   }
 }
-# aws db 
+# aws database 
 resource "aws_db_instance" "petclinic" {
   identifier      = "petclinic"
   engine                  = "mysql"

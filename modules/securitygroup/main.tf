@@ -44,7 +44,7 @@ resource "aws_security_group" "sonarqube-sg" {
   }
 }
 
-# Ansible SG
+# Ansible security group
 resource "aws_security_group" "ansible-sg" {
   name        = "ansible-sg"
   description = "Ansible Security Group"
@@ -69,7 +69,7 @@ resource "aws_security_group" "ansible-sg" {
   }
 }
 
-# Nexus SG
+# Nexus security group
 resource "aws_security_group" "nexus-sg" {
   name        = "nexus-sg"
   description = "Nexus Security Group"
@@ -122,7 +122,7 @@ resource "aws_security_group" "nexus-sg" {
   }
 }
 
-# Jenkins SG
+# Jenkins security group
 resource "aws_security_group" "jenkins-sg" {
   name        = "jenkins-sg"
   description = "Jenkins Security Group"
@@ -168,7 +168,7 @@ resource "aws_security_group" "jenkins-sg" {
   }
 }
 
-# Auto Scaling Group SG
+# Auto Scaling Group or Docker security group - See Read ME
 resource "aws_security_group" "asg-sg" {
   name        = "asg-sg"
   description = "asg Security Group"
@@ -214,7 +214,7 @@ resource "aws_security_group" "asg-sg" {
   }
 }
 
- # Bastion SG
+ # Bastion security group
  resource "aws_security_group" "bastion-sg" {
   name        = "bastion-sg"
   description = "bastion Security Group"
@@ -239,7 +239,7 @@ resource "aws_security_group" "asg-sg" {
   }
 }
 
-# RDS SG
+# RDS security group
 resource "aws_security_group" "rds-sg" {
   name        = "rds-sg"
   description = "rds Security Group"

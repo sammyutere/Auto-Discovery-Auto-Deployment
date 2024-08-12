@@ -114,3 +114,5 @@ resource "aws_route_table_association" "rta-prv2" {
   subnet_id      = aws_subnet.private_subnet2.id
   route_table_id = aws_route_table.prv-rt.id
 }
+
+

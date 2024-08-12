@@ -1,16 +1,16 @@
 provider "aws" {
-  region = "eu-west-3"
-  profile = "lead"
+  region = "eu-west-2"
+  profile = "default"
 }
 
 resource "aws_instance" "vault_server" {
-  ami           = "ami-00ac45f3035ff009e"
+  ami           = "ami-07c1b39b7b3d2525d" #Ubuntu
   instance_type = "t2.medium"
   iam_instance_profile = aws_iam_instance_profile.ec2_instance_profile.name
   key_name               = aws_key_pair.public_key.id
   vpc_security_group_ids = [aws_security_group.vault-sg.id]
   user_data              = templatefile("./vault-script.sh", {
-    var1 = "eu-west-3"
+    var1 = "eu-west-2"
     var2 = aws_kms_key.vault.id
     keypair = tls_private_key.keypair.private_key_pem
   })
@@ -97,13 +97,13 @@ resource "aws_key_pair" "public_key" {
 }
 
 data "aws_route53_zone" "route53_zone" {
-  name              = "greatminds.sbs"
+  name              = "linuxclaud.sbs"
   private_zone =  false
 }
 
 resource "aws_route53_record" "vault_record" {
   zone_id = data.aws_route53_zone.route53_zone.zone_id
-  name    = "vault.greatminds.sbs"
+  name    = "vault.linuxclaud.sbs"
   type    = "A"
   alias  {
     name       =   aws_elb.vault_lb.dns_name
@@ -112,8 +112,8 @@ resource "aws_route53_record" "vault_record" {
   }
 }
 resource "aws_acm_certificate" "acm-cert" {
-  domain_name = "greatminds.sbs"
-  subject_alternative_names = ["*.greatminds.sbs"]
+  domain_name = "linuxclaud.sbs"
+  subject_alternative_names = ["*.linuxclaud.sbs"]
   validation_method = "DNS"
   lifecycle {
     create_before_destroy = true
@@ -144,7 +144,7 @@ zone_id     =  data.aws_route53_zone.route53_zone.zone_id
 
 resource "aws_elb" "vault_lb" {
   name            = "vault-lb"
-  availability_zones = ["eu-west-3a", "eu-west-3b"]
+  availability_zones = ["eu-west-2a", "eu-west-2b"]
   security_groups = [aws_security_group.vault-sg.id]
   listener {
     instance_port      = 8200
@@ -172,4 +172,5 @@ resource "aws_elb" "vault_lb" {
       Name = "vault-elb"
   }
 }
+
 

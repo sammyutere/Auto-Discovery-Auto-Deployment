@@ -2,7 +2,7 @@
 - hosts: webservers
   become: true
   vars_files:
-    - ansible_vars_file.yml
+    - ansible_vars_file.yaml
   tasks:
     - name: Stop any container running
       command: docker stop appContainer

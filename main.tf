@@ -3,15 +3,15 @@ locals {
 }
 
 data "aws_acm_certificate" "acm-cert" {
-  domain = "greatminds.sbs" 
+  domain = "linuxclaud.com" 
   types       = ["AMAZON_ISSUED"]
   most_recent = true
 }
 
 module "vpc" {
   source      = "./modules/vpc"
-  avz1        = "eu-west-3a"
-  avz2        = "eu-west-3b"
+  avz1        = "eu-west-2a"
+  avz2        = "eu-west-2b"
   name-vpc    = "${local.name}-vpc"
   name-igw    = "${local.name}-igw"
   name-ngw    = "${local.name}-ngw"
@@ -34,7 +34,7 @@ module "keypair" {
 }
 module "nexus" {
   source       = "./modules/nexus"
-  red_hat      = "ami-0574a94188d1b84a1"
+  red_hat      = "ami-07d1e0a32156d0d21"
   nexus_subnet = module.vpc.pubsn1_id
   pub_key      = module.keypair.pub_key_pair_id
   nexus_sg     = module.securitygroup.nexus-sg
@@ -45,7 +45,7 @@ module "nexus" {
 }
 module "jenkins" {
   source       = "./modules/jenkins"
-  ami-redhat   = "ami-0574a94188d1b84a1"
+  ami-redhat   = "ami-07d1e0a32156d0d21"
   vpc_id = module.vpc.vpc_id
   subnet-id    = module.vpc.prvsn1_id
   jenkins-sg   = module.securitygroup.Jenkins-sg
@@ -54,8 +54,8 @@ module "jenkins" {
   nexus-ip     = module.nexus.nexus_ip
   cert-arn     = data.aws_acm_certificate.acm-cert.arn
   subnet-elb   = [module.vpc.pubsn1_id, module.vpc.pubsn2_id]
-  nr-key       = "NRAK-W7PYXA013NC8GAFZL30HD58HOUO"
-  nr-acc-id    = "4456322"
+  nr-key       = "NRAK-Q7SPK9I8N4XUY9QEWBMJ0IAB0TV"
+  nr-acc-id    = "4561956"
   nr-region    = "EU"
 }
 
@@ -74,10 +74,10 @@ module "rds" {
   rds_sg        = [module.securitygroup.rds-sg]
 }
 
-# Creating bastion host
+# Creating bastion host - Ubuntu
 module "bastion" {
   source        = "./modules/bastion"
-  ami-id        = "ami-00ac45f3035ff009e"
+  ami-id        = "ami-07c1b39b7b3d2525d"
   subnet_id     = module.vpc.pubsn1_id
   ssh_key       = module.keypair.pub_key_pair_id
   instance_type = "t2.micro"
@@ -88,7 +88,7 @@ module "bastion" {
 
 module "sonarqube" {
   source                = "./modules/sonarqube"
-  ami                   = "ami-00ac45f3035ff009e"
+  ami                   = "ami-07c1b39b7b3d2525d" # Ubuntu
   sonarqube_server_name = "${local.name}-sonar-server"
   instance_type         = "t2.medium"
   key_name              = module.keypair.pub_key_pair_id
@@ -101,12 +101,12 @@ module "sonarqube" {
 
 module "prod-asg" {
   source                = "./modules/prodasg"
-  ami                   = "ami-0574a94188d1b84a1"
+  ami                   = "ami-07d1e0a32156d0d21"
   asg-sg                = module.securitygroup.asg-sg
   pub-key               = module.keypair.pub_key_pair_id
   nexus-ip              = module.nexus.nexus_ip
-  newrelic-user-licence = "NRAK-W7PYXA013NC8GAFZL30HD58HOUO"
-  newrelic-acct-id      = "4456322"
+  newrelic-user-licence = "NRAK-Q7SPK9I8N4XUY9QEWBMJ0IAB0TV"
+  newrelic-acct-id      = "4561956"
   vpc-zone-identifier   =[module.vpc.prvsn1_id, module.vpc.prvsn2_id]
   prod-asg-policy-name  = "prod-asg-policy"
   tg-arn                = module.prod-lb.tg-prod-arn
@@ -118,12 +118,12 @@ module "prod-asg" {
 
 module "stage-asg" {
   source                = "./modules/stage-asg"
-  ami                   = "ami-0574a94188d1b84a1"
+  ami                   = "ami-07d1e0a32156d0d21"
   asg-sg                = module.securitygroup.asg-sg
   pub-key               = module.keypair.pub_key_pair_id
   nexus-ip              = module.nexus.nexus_ip
-  newrelic-user-licence = "NRAK-W7PYXA013NC8GAFZL30HD58HOUO"
-  newrelic-acct-id      = "4456322"
+  newrelic-user-licence = "NRAK-Q7SPK9I8N4XUY9QEWBMJ0IAB0TV"
+  newrelic-acct-id      = "4561956"
   vpc-zone-identifier   = [module.vpc.prvsn1_id, module.vpc.prvsn2_id]
   stage-asg-policy-name = "stage-asg-policy"
   tg-arn                = module.stage-lb.tg-stage-arn
@@ -134,20 +134,20 @@ module "stage-asg" {
 
 module "route53" {
   source    = "./modules/route53"
-  domain_name  ="greatminds.sbs"
-  jenkins_domain_name  = "jenkins.greatminds.sbs"
+  domain_name  ="linuxclaud.sbs"
+  jenkins_domain_name  = "jenkins.linuxclaud.sbs"
   jenkins_lb_dns_name  = module.jenkins.alb-jen-dns
   jenkins_lb_zone_id   = module.jenkins.alb-jen-zoneid
-  nexus_domain_name  = "nexus.greatminds.sbs"
+  nexus_domain_name  = "nexus.linuxclaud.sbs"
   nexus_lb_dns_name  = module.nexus.nexus_dns_name
   nexus_lb_zone_id   = module.nexus.nexus_zone_id
-  sonarqube_domain_name  = "sonarqube.greatminds.sbs"
+  sonarqube_domain_name  = "sonarqube.linuxclaud.sbs"
   sonarqube_lb_dns_name  = module.sonarqube.sonarqube_dns_name
   sonarqube_lb_zone_id   = module.sonarqube.sonarqube_zone_id
-  prod_domain_name  = "prod.greatminds.sbs"
+  prod_domain_name  = "prod.linuxclaud.sbs"
   prod_lb_dns_name  = module.prod-lb.alb-prod-dns
   prod_lb_zone_id   = module.prod-lb.alb-prod-zoneid
-  stage_domain_name  = "stage.greatminds.sbs"
+  stage_domain_name  = "stage.linuxclaud.sbs"
   stage_lb_dns_name  = module.stage-lb.alb-stage-dns
   stage_lb_zone_id   = module.stage-lb.alb-stage-zoneid
 }
@@ -177,7 +177,7 @@ module "stage-lb" {
 
 module "ansible" {
   source = "./modules/ansible"
-  red_hat = "ami-0574a94188d1b84a1"
+  red_hat = "ami-07d1e0a32156d0d21"
   ansible_subnet = module.vpc.prvsn1_id
   pub_key = module.keypair.pub_key_pair_id
   ansible_sg = module.securitygroup.ansible-sg
@@ -188,8 +188,6 @@ module "ansible" {
   prod-discovery-script = "${path.root}/modules/ansible/auto-discovery-prod.sh"
   private_key = module.keypair.private_key_pem
   nexus-ip = module.nexus.nexus_ip
-  newrelic-license-key = "NRAK-W7PYXA013NC8GAFZL30HD58HOUO"
-  newrelic-acct-id = "4456322"  
-
-  
+  newrelic-license-key = "NRAK-Q7SPK9I8N4XUY9QEWBMJ0IAB0TV"
+  newrelic-acct-id = "4561956"    
 }

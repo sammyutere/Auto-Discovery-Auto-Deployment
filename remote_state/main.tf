@@ -1,6 +1,6 @@
 provider "aws" {
-  region = "eu-west-3"
-  profile = "lead"
+  region = "eu-west-2"
+  profile = "default"
 }
 
 resource "aws_s3_bucket" "s3-set19" {
@@ -23,3 +23,4 @@ resource "aws_dynamodb_table" "dynamodb-tfstate" {
   }
 
 }
+
