@@ -97,13 +97,13 @@ resource "aws_key_pair" "public_key" {
 }
 
 data "aws_route53_zone" "route53_zone" {
-  name              = "linuxclaud.sbs"
+  name              = "linuxclaud.com"
   private_zone =  false
 }
 
 resource "aws_route53_record" "vault_record" {
   zone_id = data.aws_route53_zone.route53_zone.zone_id
-  name    = "vault.linuxclaud.sbs"
+  name    = "vault.linuxclaud.com"
   type    = "A"
   alias  {
     name       =   aws_elb.vault_lb.dns_name
@@ -112,8 +112,8 @@ resource "aws_route53_record" "vault_record" {
   }
 }
 resource "aws_acm_certificate" "acm-cert" {
-  domain_name = "linuxclaud.sbs"
-  subject_alternative_names = ["*.linuxclaud.sbs"]
+  domain_name = "linuxclaud.com"
+  subject_alternative_names = ["*.linuxclaud.com"]
   validation_method = "DNS"
   lifecycle {
     create_before_destroy = true
@@ -172,5 +172,7 @@ resource "aws_elb" "vault_lb" {
       Name = "vault-elb"
   }
 }
+
+
 
 

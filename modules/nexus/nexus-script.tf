@@ -38,7 +38,7 @@ sudo ln -s /app/nexus/bin/nexus /etc/init.d/nexus
 sudo chkconfig --add nexus
 sudo chkconfig --levels 345 nexus on
 sudo service nexus start
-curl -Ls https://download.newrelic.com/install/newrelic-cli/scripts/install.sh | bash && sudo NEW_RELIC_API_KEY=NRAK-ZTC5BPSBEBNDDQ1AEN6TY2KWOOJ NEW_RELIC_ACCOUNT_ID=4155533 NEW_RELIC_REGION=EU /usr/local/bin/newrelic install -y
+curl -Ls https://download.newrelic.com/install/newrelic-cli/scripts/install.sh | bash && sudo NEW_RELIC_API_KEY=NRAK-Q7SPK9I8N4XUY9QEWBMJ0IAB0TV NEW_RELIC_ACCOUNT_ID=4561956 NEW_RELIC_REGION=EU /usr/local/bin/newrelic install -y
 sudo hostnamectl set-hostname Nexus
 EOF
 }

@@ -7,3 +7,4 @@ output "nexus_dns_name" {
 output "nexus_zone_id" {
     value = aws_elb.nexus_lb.zone_id
 }
+

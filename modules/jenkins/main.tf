@@ -70,3 +70,4 @@ resource "aws_lb_target_group_attachment" "tg_att" {
   target_id        = aws_instance.jenkins_server.id
   port             = 8080
 }
+

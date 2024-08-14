@@ -134,20 +134,20 @@ module "stage-asg" {
 
 module "route53" {
   source    = "./modules/route53"
-  domain_name  ="linuxclaud.sbs"
-  jenkins_domain_name  = "jenkins.linuxclaud.sbs"
+  domain_name  ="linuxclaud.com"
+  jenkins_domain_name  = "jenkins.linuxclaud.com"
   jenkins_lb_dns_name  = module.jenkins.alb-jen-dns
   jenkins_lb_zone_id   = module.jenkins.alb-jen-zoneid
-  nexus_domain_name  = "nexus.linuxclaud.sbs"
+  nexus_domain_name  = "nexus.linuxclaud.com"
   nexus_lb_dns_name  = module.nexus.nexus_dns_name
   nexus_lb_zone_id   = module.nexus.nexus_zone_id
-  sonarqube_domain_name  = "sonarqube.linuxclaud.sbs"
+  sonarqube_domain_name  = "sonarqube.linuxclaud.com"
   sonarqube_lb_dns_name  = module.sonarqube.sonarqube_dns_name
   sonarqube_lb_zone_id   = module.sonarqube.sonarqube_zone_id
-  prod_domain_name  = "prod.linuxclaud.sbs"
+  prod_domain_name  = "prod.linuxclaud.com"
   prod_lb_dns_name  = module.prod-lb.alb-prod-dns
   prod_lb_zone_id   = module.prod-lb.alb-prod-zoneid
-  stage_domain_name  = "stage.linuxclaud.sbs"
+  stage_domain_name  = "stage.linuxclaud.com"
   stage_lb_dns_name  = module.stage-lb.alb-stage-dns
   stage_lb_zone_id   = module.stage-lb.alb-stage-zoneid
 }
@@ -191,3 +191,4 @@ module "ansible" {
   newrelic-license-key = "NRAK-Q7SPK9I8N4XUY9QEWBMJ0IAB0TV"
   newrelic-acct-id = "4561956"    
 }
+

@@ -1,11 +1,11 @@
 provider "aws" {
-  region = "eu-west-3"
-  profile = "lead"
+  region = "eu-west-2"
+  profile = "default"
 }
 
 provider "vault" {
-  token = "s.RRMqzgqnJjH1jsiBjxhCCZsp"
+  token = "s.wHfAEgke7FyErbKrN0Dm6FYR"
 
-  address = "https://vault.greatminds.sbs"
+  address = "https://vault.linuxclaud.com"
 }
 
