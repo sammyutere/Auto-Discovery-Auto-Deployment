@@ -4,7 +4,6 @@
 
 # Note that to be able to adapt this code or replicate this project for your personal use, you must change the following values outlined below
 /*
-    
     • In the root main file, you must change the following to your own values to be able to use this code to run your own application: 
         ◦ change the domain to your own domain under (data "aws_acm_certificate") 
         ◦ change the availability zones to values relevant to your region, under module “vpc” module avz1 and avz2 
@@ -32,5 +31,4 @@
     • change within variable.tf which is in the same directory hierarchy as the root main.tf, default.? 
     • change the NEW_RELIC_API_KEY and NEW_RELIC_ACCOUNT_ID within modules/nexus/nexus-script.tf and modules/sonarqube/sonarqube.tf 
     Note that to get your new relic values, click to generate new key copy and save copy new relic account id also.
-
 */
