@@ -5,8 +5,8 @@
 # Note that to be able to adapt this code or replicate this project for your personal use, you must change the following values outlined below
 /*
     
-    • In the root main file, you must change the following to your own values to be able to use this code to run your own application:\\\\
-        ◦ change the domain to your own domain under (data "aws_acm_certificate")\\\\
+    • In the root main file, you must change the following to your own values to be able to use this code to run your own application:\
+        ◦ change the domain to your own domain under (data "aws_acm_certificate")\
         ◦ change the availability zones to values relevant to your region, under module “vpc” module avz1 and avz2\
         ◦ change ami values to the values relevant to your aws region, under module “nexus”, module “jenkins”\
         ◦ change newrelic values, nr-key, nr-acc-id, nr-region, under module “jenkins”\
