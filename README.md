@@ -2,7 +2,7 @@
 
 # Auto-Discovery-Auto-Deployment
 
-# Note that to be able to adapt this code or replicate this project for your personal use, you must change the following values outline below
+# Note that to be able to adapt this code or replicate this project for your personal use, you must change the following values outlined below
 /*
     • In the root main file, you must change the following to your own values to be able to use this code to run your own application:
         ◦ change the domain to your own domain under (data "aws_acm_certificate")
