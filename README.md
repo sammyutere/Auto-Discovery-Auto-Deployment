@@ -31,7 +31,7 @@
     • change within provider.tf which is in the same directory hierarchy as the root main.tf, region, profile, token, and address (domain name) 
     • change within variable.tf which is in the same directory hierarchy as the root main.tf, default.? 
     • change the NEW_RELIC_API_KEY and NEW_RELIC_ACCOUNT_ID within modules/nexus/nexus-script.tf and modules/sonarqube/sonarqube.tf 
-    Note that to get your new relic values, click to generate new key copy and save copy new relic account id also.
+    Note that to get your new relic values, signup for a Nwe Relic Account, then click to generate new key copy and save also copy new relic account id.
 
 */ 
 
