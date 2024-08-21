@@ -71,7 +71,8 @@ Next in the vault server terminal run the command vault login and paste the init
 
 Next define the secret path that was defined in the root main.tf as,
 
-data "vault_generic_secret" "vault_secret" {            path = "secret/database"
+data "vault_generic_secret" "vault_secret" { 
+    path = "secret/database"
 }
 
 To create this path in the vault sever, run the command, vault secrets enable -path=secret/ kv in the vault server terminal.
