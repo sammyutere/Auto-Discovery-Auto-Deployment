@@ -58,7 +58,7 @@ Now you may wish to check the vault server terminal logs and verify that the use
 To see vault server user interface, on your brower, type vault.domain-name eg, vault.linuxclaud.com
 Do not do anything yet with the browser user interface at this stage.
 
-Establish ssh connection into the vault server, with the command, ssh -i vault-private-key ubuntu@vault_server_ip
+Establish ssh connection into the vault server, with the command, *ssh -i vault-private-key ubuntu@vault_server_ip* The server IP is present as an output value, in your terminal after you provisioned the vault server.
 
 Now in the vault server terminal to generate vault token, run the command vault operator init
 
