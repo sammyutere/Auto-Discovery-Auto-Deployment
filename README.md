@@ -51,14 +51,14 @@ Go to AWS console and add your domain name to Route53, choose public hosting.
 Change directory to vault directory and run, terraform init, terraform apply -auto-approve
 
 
-Next you may wish to ssh into the vault server and check if its user data is completely installed, use the command ssh -i vault-private-key ubuntu@vault_server_ip
+Next you may wish to ssh into the vault server and check if its user data is completely installed, use the command **ssh -i vault-private-key ubuntu@vault_server_ip**
 
 Now you may wish to check the vault server terminal logs and verify that the user-data has been successfully installed use the command cat /var/log/cloud-init-output.log 
 
 To see vault server user interface, on your brower, type vault.domain-name eg, vault.linuxclaud.com
 Do not do anything yet with the browser user interface at this stage.
 
-Establish ssh connection into the vault server, with the command, *ssh -i vault-private-key ubuntu@vault_server_ip* The server IP is present as an output value, in your terminal after you provisioned the vault server.
+Establish ssh connection into the vault server, with the command, **ssh -i vault-private-key ubuntu@vault_server_ip** The server IP is present as an output value, in your terminal after you provisioned the vault server.
 
 Now in the vault server terminal to generate vault token, run the command vault operator init
 
