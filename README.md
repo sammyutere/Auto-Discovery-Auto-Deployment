@@ -10,6 +10,15 @@ To deploy a higly available, self-healing, scalable and secured containerised Ja
 * AWS - used for cloud infrastructure.
 * Git - used as version control system, Repository
 * Bastion Host - used as EC2 to manage access to cloud resources in a private subnet, a secure internal network. 
+* Jenkins - used as continuous integration continuous deployment/delivery CICD tool
+* SonarQube - used as code analysis tool for vulnerabilities
+* Ansible - used as configuration management tool
+* Docker - used as containerisation tool
+* S3 Bucket - used for remote management of terraform state file
+* Hashicorp Vault - used to manage database credentials
+* NewRelic - used as full-stack montoring tool
+* Jira/Confluence - used as work management and documentation tool
+
 
 # Application Overview
 This application 
