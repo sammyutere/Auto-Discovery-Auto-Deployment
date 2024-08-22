@@ -2,6 +2,9 @@
 
 # Auto-Discovery-Auto-Deployment
 
+# Project Goal 
+To deploy a higly available, self-healing, scalable and secured containerised Java application, using Jenkins pipeline in Amazon Web Services (AWS).
+
 # Application Overview
 This application 
 
