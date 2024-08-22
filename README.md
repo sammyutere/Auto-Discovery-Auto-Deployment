@@ -8,11 +8,13 @@ To deploy a higly available, self-healing, scalable and secured containerised Ja
 # Tech Stack 
 * Terraform - used as infrastructure as code (IaC) 
 * AWS - used for cloud infrastructure.
+* Git - used as version control system, Repository
+* Bastion Host - used as EC2 to manage access to cloud resources in a private subnet, a secure internal network. 
 
 # Application Overview
 This application 
 
-# Note that to be able to adapt this code or replicate this project for your personal use, you must change the following values outlined below
+## Note that to be able to adapt this code or replicate this project for your personal use, you must change the following values outlined below
 /*
 
     • In the root main file, you must change the following to your own values to be able to use this code to run your own application: 
