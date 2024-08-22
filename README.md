@@ -6,7 +6,7 @@
 To deploy a higly available, self-healing, scalable and secured containerised Java application, using Jenkins pipeline in Amazon Web Services (AWS).
 
 # Tech Stack 
-Terraform - used as infrastructure as code (IaC) AWS - used for cloud infrastructure.
+Terraform - used as infrastructure as code (IaC)                AWS - used for cloud infrastructure.
 
 # Application Overview
 This application 
