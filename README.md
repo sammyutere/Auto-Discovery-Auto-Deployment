@@ -58,8 +58,8 @@ This application
 
 # To Test run the application, Do the Following Shown Below:
 
-Change directory to remote_state directory and run, terraform init, terraform apply -auto-approve   
-Change directory to backend.tf which is in the same directory hierarchy as the root main.tf and run, terraform init, terraform apply -auto-approve  
+Change directory to **remote_state directory** and run, **terraform init**, **terraform apply -auto-approve**   
+Change directory to **backend.tf** which is in the same directory hierarchy as the root main.tf and run, terraform init, terraform apply -auto-approve  
 Change directory to provider.tf which is in the same directory hierarchy as the root main.tf
 and run, terraform init, terraform apply -auto-approve  
 
