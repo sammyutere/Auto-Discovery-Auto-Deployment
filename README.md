@@ -198,14 +198,14 @@ Click Save and Finish then click Start using Jenkins
 Next return to click on manage jenkins
 Click on plugins, click on available plugins
 
-Type ssh in the available plugins search bar and select SSH Agent radio button
-Type nexus in the available plugins search bar and select Nexus Artifact Uploader radio button
-Type maven in the available plugins search bar and select Maven Integration radio button
-Type sonar in the available plugins search bar and select SonarQube Scanner radio button
-Type slack in the available plugins search bar and select Slack Notification radio button
-Type docker in the available plugins search bar and select Docker radio button
-Type pipeline in the available plugins search bar and select Pipeline Stage View radio button
-Type owasp in the available plugins search bar and select OWASP Dependency-check radio button
+- Type ssh in the available plugins search bar and select SSH Agent radio button
+- Type nexus in the available plugins search bar and select Nexus Artifact Uploader radio button
+- Type maven in the available plugins search bar and select Maven Integration radio button
+- Type sonar in the available plugins search bar and select SonarQube Scanner radio button
+- Type slack in the available plugins search bar and select Slack Notification radio button
+- Type docker in the available plugins search bar and select Docker radio button
+- Type pipeline in the available plugins search bar and select Pipeline Stage View radio button
+- Type owasp in the available plugins search bar and select OWASP Dependency-check radio button
 Click on install
 
 
