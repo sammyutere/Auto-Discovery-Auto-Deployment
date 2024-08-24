@@ -351,3 +351,24 @@ Click Apply Save
 Click Build Now
 
 */
+
+Tools must include dependency check
+Plug in addition - Sonar quality gates
+
+To setup webhook on github, choose webhook, paste Jenkins API token, then put url jenkins url/github-webhook
+
+For ssh agent, ID and Description is ansible-key, username is ec2-user
+
+Nexus - secret text - nexus url - ID and Description - nexus-repo
+
+Fork this application repo https://github.com/CloudHight/usteam.git,  
+You must uncheck the box fork only main
+Click on main drop down menu and select the branch pet-set19
+Within this branch click on Jenkinsfile 
+Within the Jenkinsfile, at the far top right, click on the edit pen,
+Change the following:
+Line 52 to your domain name for example, nexus.linuxclaud.com
+Line 82 to the IP address of your ansible server
+Line 89 to your domain name for example, https://stage.linuxclaud.com
+Line 91 to your domain name for example, https://stage.linuxclaud.com
+Line 91 to the IP address of your ansible server 

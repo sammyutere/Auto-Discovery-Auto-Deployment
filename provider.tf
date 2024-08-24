@@ -4,7 +4,7 @@ provider "aws" {
 }
 
 provider "vault" {
-  token = "s.9bnCkJtuwMqD2QR58EQBtooB"
+  token = "s.2g3d0mdd2qywawLCv0izk9Vc"
 
   address = "https://vault.linuxclaud.com"
 }
