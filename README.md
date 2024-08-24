@@ -372,3 +372,9 @@ Line 82 to the IP address of your ansible server
 Line 89 to your domain name for example, https://stage.linuxclaud.com
 Line 91 to your domain name for example, https://stage.linuxclaud.com
 Line 91 to the IP address of your ansible server 
+
+For NewRelic - secret text - API key
+
+For sonarqube setup url, jenkins url/sonarqube-webhook
+
+DP - check latest version
