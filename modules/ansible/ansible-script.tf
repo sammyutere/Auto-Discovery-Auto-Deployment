@@ -24,10 +24,15 @@ export AWS_ACCESS_KEY_ID=${aws_iam_access_key.ansible-user-key.id}
 export AWS_SECRET_ACCESS_KEY=${aws_iam_access_key.ansible-user-key.secret}
 
 # install ansible
-wget https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
-sudo yum install epel-release-latest-7.noarch.rpm -y
+wget https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm 
+sudo yum install epel-release-latest-9.noarch.rpm -y
 sudo yum update -y
-sudo yum install python python-devel python-pip ansible -y
+sudo yum install ansible -y
+
+# sudo yum install python3 python3-pip -y
+# sudo pip3 install ansible
+# sudo ln -svf /usr/local/bin/ansible /usr/bin/ansible
+# sudo mkdir /etc/ansible
 
 #copy files to ansible server
 sudo echo "${file(var.stage-playbook)}" >> /etc/ansible/stage-playbook.yml 
@@ -53,3 +58,4 @@ sudo NEW_RELIC_API_KEY="${var.newrelic-license-key}" NEW_RELIC_ACCOUNT_ID="${var
 sudo hostnamectl set-hostname ansible-server 
 EOF
 }
+

@@ -78,14 +78,14 @@ Do not do anything yet with the browser user interface at this stage.
 
 Establish ssh connection into the vault server, with the command, **ssh -i vault-private-key ubuntu@vault_server_ip** The server IP is present as an output value, in your terminal after you provisioned the vault server.
 
-Now in the vault server terminal to generate vault token, run the command vault operator init
+Now in the vault server terminal to generate vault token, run the command **vault operator init**
 
 Copy the initial root token 
 
 Next go to provider.tf which is in the same directory hierarchy as the root main.tf and paste the root token there.
 Take note that whenever you destroy and reprovision your vault server resource, you have to do this process again.
 
-Next in the vault server terminal run the command vault login and paste the initial root token you copied earlier.
+Next in the vault server terminal run the command **vault login** and paste the initial root token you copied earlier.
 
 Next define the secret path that was defined in the root main.tf as,
 
@@ -93,49 +93,45 @@ data "vault_generic_secret" "vault_secret" {
     path = "secret/database"
 }
 
-To create this path in the vault sever, run the command, vault secrets enable -path=secret/ kv in the vault server terminal.
+To create this path in the vault sever, run the command, **vault secrets enable -path=secret/ kv** in the vault server terminal.
 
 
-Next in the vault server terminal run the command, vault kv put secret/database username=admin password=admin123
+Next in the vault server terminal run the command, **vault kv put secret/database username=admin password=admin123**
 
-To check the secret was successfully entered, in vault server terminal, type vault kv get secret/database
+To check the secret was successfully entered, in vault server terminal, type **vault kv get secret/database**
 
 Next you can check these key value in the vault server user interface, via its domain, vault.domain-name eg, vault.linuxclaud.com
 Enter the initial root token to login and click on the relevant links to see the key values that we created via the vault server terminal.
 
 Change directory to root main.tf, run, terraform init, terraform apply -auto-approve
 
-Use the sonarqube domain name to access the sonarqube server, on your browser type, https://sonarqube.domain-name eg  https://sonarqube.linuxclaud.com
+Use the sonarqube domain name to access the sonarqube server, on your browser, type, https://sonarqube.domain-name eg  https://sonarqube.linuxclaud.com
 
 Login to sonarqube server using the username and password defined in its module script, username=admin password=admin 
 Change when prompted to username and password login credentials of your choice.
 
 Click on Administration tab
 
-Under Administration, click security, select Users, click the horizontal stripe selection menu on the far right, beside Administrator, in the new window that opens, Add Name (sonarqube) of choice and click generate token, copy and save the token, to be used later.
+Under Administration, click security, select Users, under Tokens, click the horizontal stripe selection menu, beside Administrator, in the new window that opens, Add Name (sonarqube) of choice and click generate token, copy and save the token, to be used later.
 
 Under Administration, click configuration, select webhooks, click on create tab.
 Add Name sonarqube
-Add URL https://jenkins.domain-name eg  https://jenkins.linuxclaud.com
+Add URL https://jenkins.domain-name eg  https://jenkins.linuxclaud.com/sonarqube-webhook
 Click create
 
 
 
-Next from the root main terminal, ssh into Nexus server, with the command, ssh -i petclinic-private-key ec2-user@nexus-server-ip
+Next from the root main terminal, ssh into Nexus server, with the command, **ssh -i petclinic-private-key ec2-user@nexus-server-ip**
 
-Next access the nexus server user interface on your browser, type, nexus.domain-name eg, nexus.linuxclaud.com
-
-
-Click on, Sign-in
-
-In the dialogue box that appears, copy the admin password directory path, /app/sonatype-work/nexus3/admin.password
-
-
-In the Nexus server terminal, to access the admin password, use the command, sudo cat /app/sonatype-work/nexus3/admin.password
+In the dialogue box that appears, copy the admin password directory path, hence use the command on the nexus terminal **sudo cat /app/sonatype-work/nexus3/admin.password**
 
 Copy the admin password characters, 
 
-Return to the Nexus browser interface dialogue box, type for Username: admin and paste the password you copied in the password box.
+Next access the nexus server user interface on your browser, type, nexus.domain-name eg, nexus.linuxclaud.com
+
+Click on, Sign-in
+
+On the Nexus browser interface dialogue box, type for Username: admin and paste the password you copied in the password box.
 
 Click Next in the dialogue box that appears
 
@@ -147,40 +143,30 @@ Click finish
 
 Click on the cogwheel, click on Repository in the left hand pane, then click create repository
 
-In the drop down list select maven2(hosted)
+- In the drop down list select maven2(hosted)
+    Under Name, type name of choice eg, nexus-repo
+    Under version policy, select mixed
+    Under Deployment policy, select Allow redeploy
+    Click create repository
 
-Under Name, chose name of choice eg, nexus-repo
+- Next click create repository at the top pane
+    In the drop down list select docker(hosted)
+    Under Name, chose name of choice eg, docker-repo
+    Select HTTP radio button and enter 8085 as port value
+    Select HTTPS radio button and enter 443 as port value
+    Under Enable Docker V1 API, select the radio button 
+    Click create repository
 
-Under version policy, select mixed
-
-Under Deployment policy, select Allow redeploy
-
-Click create repository
-
-Next click create repository at the top pane
-
-In the drop down list select docker(hosted)
-
-Under Name, chose name of choice eg, docker-repo
-
-Select HTTP radio button and enter 8085 as port value
-
-Under Enable Docker V1 API, select the radio button 
-
-Click create repository
-
-Next under security, click on Realms
-
-Double click on Docker Bearer Token Realm
-
-Click on save 
+- Next under security, click on Realms
+    Double click on **Docker Bearer Token Realm**
+    Click on save 
 
 Access Jenkins via bastion host, since Jenkins is in a private subnet.
-Exit connection to Nexus terminal, and establish ssh connection from the root main terminal into the bastion host using the command ssh -i petclinic-private-key ubuntu@bastion-server-ip 
+Exit connection to Nexus terminal, and establish ssh connection from the root main terminal into the bastion host using the command **ssh -i petclinic-private-key ubuntu@bastion-server-ip** 
 
-In the bastion terminal, run the command, ssh ec2-user@jenkins-server-ip
+In the bastion terminal, run the command, **ssh ec2-user@jenkins-server-ip**
 
-To have access to Jenkins administrator password to setup Jenkins from the browser, on the Jenkins terminal run, sudo cat /var/lib/jenkins/secrets/initialAdminPassword
+To have access to Jenkins administrator password to setup Jenkins from the browser, on the Jenkins terminal run, **sudo cat /var/lib/jenkins/secrets/initialAdminPassword**
 
 Copy the admin password string of characters
 
@@ -235,8 +221,11 @@ Under Dependency-Check installations, click Add Dependency-Check
 In the Name field type DP-Check
 Click install automatically radio button
 In the drop down menu of Add installer, select install from github.com
-Select dependency-check 9.0.9
+Select dependency check latest version
 Click Apply and Save
+
+It is important to use NVD API key, when you setup dependency check, otherwise you dependency check part of the Jenkins pipeline will run slowly.
+To generate the API key from the National Vulnerability Database, use this link https://nvd.nist.gov/developers/request-an-api-key  
 
 
 Next return to manage jenkins, click on credentials, click on global, click on Add credentials
@@ -252,7 +241,7 @@ Next Click Add credentials
 Under New credentials, for Kind select Secret text
 Scope is Global 
 In the Secret field enter the sonar token you generated earlier. 
-ID and Description, you may type sonar
+ID and Description, you may type sonar-cred
 Click Create
 
 
@@ -273,14 +262,21 @@ Secret is your nexus password eg admin123
 ID and Description, you may type nexus-password
 Click Create
 
-
 Next Click Add credentials
 Under New credentials, for Kind select Secret text
 Scope is Global
-Secret is your nexus IP-address:8085 eg 18.170.79.18:8085
-ID and Description, you may type nexus-repo
+Secret is your nexus repo url eg https://nexus.linuxclaud.com/   or 
+ID and Description, type nexus-repo
+
+**For the url use, nexus server ip:8085**
+
 Click Create
 
+Next click Add credentials
+Under New Credentials, for Kind select Username and Password
+Scope is Global 
+Username: eg admin, Password: eg admin123
+ID and Description, type nexus-creds
 
 Next Click Add credentials 
 Under New credentials, for Kind select Secret text
@@ -293,16 +289,16 @@ Page down to the token field, copy token.
 Click Save Settings
 
 In the Secret field enter the Slack token you would have generated
-ID and Description, you may type slack
+ID and Description, type slack
 Click Create
 
 
 Next Click Add credentials 
 Under New credentials, for Kind select SSH Username with private key
 Scope is Global
-ID – type ec2-user
+ID – type ansible-key
 Description – ansible-key
-Username – ansible-key
+Username – ec2-user
 Under Private key, click Enter directly
 
 Within the code files, Go to the petclinic-private-key directory which is in the same hierarchy as the root main.tf 
@@ -336,15 +332,17 @@ Copy the token generated, save it to be used later.
 
 Setup webhook in your github account,
 Click settings, click webhook
-Use jenkins url eg, http://jenkins.linuxclaud.com
+Use jenkins url eg, http://jenkins.linuxclaud.com/github-webhook
 Paste the Jenkins API token generated in the Secret field
 
 Go to Jenkins, Click Dashboard, Click New item
 Enter item Name
 Click Pipeline
+In the window that apears, Under build triggers, select **Github hook trigger for GitScm pooling**
 In the window that appears, Under pipeline, select Pipeline script from SCM
 Under SCM, select git
-In Repository URL type https://github.com/Cloudhight/usteam.git
+In Repository URL type for example https://github.com/sammyutere/usteam.git 
+For Credentials select git-creds
 In Branch Specifier, type, */pet-set19
 In Script Path, type, Jenkinsfile
 Click Apply Save
@@ -371,10 +369,25 @@ Line 52 to your domain name for example, nexus.linuxclaud.com
 Line 82 to the IP address of your ansible server
 Line 89 to your domain name for example, https://stage.linuxclaud.com
 Line 91 to your domain name for example, https://stage.linuxclaud.com
-Line 91 to the IP address of your ansible server 
+Line 110 to the IP address of your ansible server 
+Line 119 to your domain name for example, https://prod.linuxclaud.com
 
 For NewRelic - secret text - API key
 
 For sonarqube setup url, jenkins url/sonarqube-webhook
+This is really important - This change, adding /sonarqube-webhook made it pass quality gate.
 
 DP - check latest version
+
+In the pet-set19 branch in line 14 of the docker file, ensure you enter your own NewRelic license key 
+
+I used https.nexus.linuxclaud.com line 52 and 
+For nexus-repo on jenkins credentials I used nexus.linuxclaud.com
+
+Add credentials ID and Description nexus-creds, username - admin, password - admin123
+
+Add this credential 
+kind is username and password
+username - admin password - admin123
+
+**Then choose https for nexus-repository during setup and put the number 443**
