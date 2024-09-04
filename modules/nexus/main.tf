@@ -1,7 +1,7 @@
 #Create nexus server
 resource "aws_instance" "nexus" {
   ami                         = var.red_hat
-  instance_type               = "t2.medium"
+  instance_type               = "t2.large"
   associate_public_ip_address = true
   subnet_id                   = var.nexus_subnet
   key_name                    = var.pub_key

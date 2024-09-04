@@ -103,16 +103,16 @@ To check the secret was successfully entered, in vault server terminal, type **v
 Next you can check these key value in the vault server user interface, via its domain, vault.domain-name eg, vault.linuxclaud.com
 Enter the initial root token to login and click on the relevant links to see the key values that we created via the vault server terminal.
 
-Change directory to root main.tf, run, terraform init, terraform apply -auto-approve
+- Change directory to root main.tf, run, terraform init, terraform apply -auto-approve
 
 Use the sonarqube domain name to access the sonarqube server, on your browser, type, https://sonarqube.domain-name eg  https://sonarqube.linuxclaud.com
 
 Login to sonarqube server using the username and password defined in its module script, username=admin password=admin 
-Change when prompted to username and password login credentials of your choice.
+Change when prompted to username and password login credentials of your choice, it is suggested, Username=admin Password-admin123.
 
 Click on Administration tab
 
-Under Administration, click security, select Users, under Tokens, click the horizontal stripe selection menu, beside Administrator, in the new window that opens, Add Name (sonarqube) of choice and click generate token, copy and save the token, to be used later.
+Under Administration, click security, select Users, under Tokens, click the horizontal stripe selection menu, beside Administrator, in the new window that opens, Add Name (sonarqube) and click generate token, copy and save the token, to be used later.
 
 Under Administration, click configuration, select webhooks, click on create tab.
 Add Name sonarqube
@@ -135,7 +135,7 @@ On the Nexus browser interface dialogue box, type for Username: admin and paste 
 
 Click Next in the dialogue box that appears
 
-Enter password of your choice and confirm password
+Enter password of your choice and confirm password, it is suggested, admin123
 
 Choose disable anonymous access, and click next
 
@@ -161,6 +161,8 @@ Click on the cogwheel, click on Repository in the left hand pane, then click cre
     Double click on **Docker Bearer Token Realm**
     Click on save 
 
+Exit Nexus terminal 
+
 Access Jenkins via bastion host, since Jenkins is in a private subnet.
 Exit connection to Nexus terminal, and establish ssh connection from the root main terminal into the bastion host using the command **ssh -i petclinic-private-key ubuntu@bastion-server-ip** 
 
@@ -176,11 +178,12 @@ Paste in the Administrator password field, the Jenkins admin password you copied
 
 Click on the Install suggested plugins box
 
-Once installation is complete, in the box that appears, enter, Username, Password, Confirm password, Full name, E-mail address.
+Once installation is complete, in the box that appears, type to fill, Username, Password, Confirm password, Full name, E-mail address. It is suggest, admin, admin123, admin, your-email.
 Then click Save and Continue
 
 Click Save and Finish then click Start using Jenkins
 
+# Adding Jenkins Plugins
 Next return to click on manage jenkins
 Click on plugins, click on available plugins
 
@@ -194,16 +197,16 @@ Click on plugins, click on available plugins
 - Type owasp in the available plugins search bar and select OWASP Dependency-check radio button
 Click on install
 
-
+# Configuring Jenkins Tools
 In the Jenkins account area that opens, click on manage jenkins, click on Tools 
-Under JDK installations, click Add JDK, under Name, type java
-Next return to your Jenkins terminal and run the command, mvn -version
+Under JDK installations, click Add JDK, under Name, type **java**
+Next return to your Jenkins terminal and run the command, **mvn -version**
 
 Copy the runtime:, eg, /usr/lib/jvm/java-11-openjdk-11.0.24.0.8-2.el9.x86_64
 
 Return to your Jenkins browser account area, in the JAVA_HOME field, paste the runtime: you copied
 
-Page down to Maven installations, Under Maven installations, click Add Maven, Under Name, type maven
+Page down to Maven installations, Under Maven installations, click Add Maven, Under Name, type **maven**
 
 Next return to your Jenkins terminal and copy the path, eg, /usr/share/maven from Maven home: which came about from the mvn -version command you ran earlier.
 
@@ -213,12 +216,13 @@ Click save
 
 Next return to manage jenkins, click on Tools 
 Under Docker installations, click Add docker
-In the Name field type docker
+In the Name field type **docker**
 Click install automatically radio button
 In the drop down menu of Add installer, select Download from docker.com
+Docker version should be latest
 
 Under Dependency-Check installations, click Add Dependency-Check 
-In the Name field type DP-Check
+In the Name field type **DP-Check**
 Click install automatically radio button
 In the drop down menu of Add installer, select install from github.com
 Select dependency check latest version
@@ -227,7 +231,7 @@ Click Apply and Save
 It is important to use NVD API key, when you setup dependency check, otherwise you dependency check part of the Jenkins pipeline will run slowly.
 To generate the API key from the National Vulnerability Database, use this link https://nvd.nist.gov/developers/request-an-api-key  
 
-
+# Adding credentials on Jenkins
 Next return to manage jenkins, click on credentials, click on global, click on Add credentials
 Under New credentials, for Kind select username and password 
 Scope is Global
@@ -241,10 +245,8 @@ Next Click Add credentials
 Under New credentials, for Kind select Secret text
 Scope is Global 
 In the Secret field enter the sonar token you generated earlier. 
-ID and Description, you may type sonar-cred
+ID and Description, you type sonarqube
 Click Create
-
-
 
 
 Next Click Add credentials
@@ -265,10 +267,10 @@ Click Create
 Next Click Add credentials
 Under New credentials, for Kind select Secret text
 Scope is Global
-Secret is your nexus repo url eg https://nexus.linuxclaud.com/   or 
-ID and Description, type nexus-repo
+Secret is your nexus repo url eg https://nexus.linuxclaud.com/  
+For ID and Description, type nexus-repo
 
-**For the url use, nexus server ip:8085**
+**OR For the url use, nexus server ip:8085**
 
 Click Create
 
@@ -278,18 +280,19 @@ Scope is Global
 Username: eg admin, Password: eg admin123
 ID and Description, type nexus-creds
 
-Next Click Add credentials 
-Under New credentials, for Kind select Secret text
-Scope is Global 
-
+# To generate slack token, before setting up slack credential
 To generate token, go to Slack Apps search for Jenkins, Select Jenkins, click configuration, click Add to Slack.
 Under Post to Channel field, select the channel you which to send notifications to.
 Click Add Jenkins CI Integrations
 Page down to the token field, copy token.
 Click Save Settings
 
+Next Click Add credentials 
+Under New credentials, for Kind select Secret text
+Scope is Global 
+
 In the Secret field enter the Slack token you would have generated
-ID and Description, type slack
+For ID and Description, type slack
 Click Create
 
 
@@ -311,7 +314,7 @@ Next return to manage jenkins, click on System
 Scroll down to Slack
 Under workspace field, enter slack account username
 Under Credential, select the credential description you setup earlier
-Under Default channel/member id field, paste the slack channel name where notifications will be sent.
+Under Default channel/member id field, type the slack channel name where notifications will be sent.
 Click on test connection tab, You should see Success!
 
 
@@ -319,9 +322,9 @@ Page through to SonarQube servers
 Click on Environment variables radio button
 Under SonarQube installations
 Click Add SonarQube
-In the Name field, type sonarqube 
+In the Name field, type **sonarqube** 
 In Server URL field type the sonarqube url eg, https://sonarqube.linuxclaud.com
-Under Server authentication token, select sonarqube 
+Under Server authentication token, select **sonarqube** 
 Page down, click Apply and Save 
 
 
@@ -329,15 +332,20 @@ Page down, click Apply and Save
 Within Jenkins browser account, under admin drop down menu, click configure 
 Under API Token, click Add new token, click Generate 
 Copy the token generated, save it to be used later.
+Click Apply and Save
 
 Setup webhook in your github account,
-Click settings, click webhook
+Click settings in the usteam repository page, click webhook
 Use jenkins url eg, http://jenkins.linuxclaud.com/github-webhook
 Paste the Jenkins API token generated in the Secret field
 
+Fork the usteam repository from this link, 
+Change ansible ip and other stuff in Jenkins file
+
 Go to Jenkins, Click Dashboard, Click New item
 Enter item Name
-Click Pipeline
+Click Pipeline,
+Click ok
 In the window that apears, Under build triggers, select **Github hook trigger for GitScm pooling**
 In the window that appears, Under pipeline, select Pipeline script from SCM
 Under SCM, select git
@@ -370,6 +378,7 @@ Line 82 to the IP address of your ansible server
 Line 89 to your domain name for example, https://stage.linuxclaud.com
 Line 91 to your domain name for example, https://stage.linuxclaud.com
 Line 110 to the IP address of your ansible server 
+Line 117 to your domain name for example, https://prod.linuxclaud.com
 Line 119 to your domain name for example, https://prod.linuxclaud.com
 
 For NewRelic - secret text - API key
@@ -377,17 +386,7 @@ For NewRelic - secret text - API key
 For sonarqube setup url, jenkins url/sonarqube-webhook
 This is really important - This change, adding /sonarqube-webhook made it pass quality gate.
 
-DP - check latest version
-
 In the pet-set19 branch in line 14 of the docker file, ensure you enter your own NewRelic license key 
 
-I used https.nexus.linuxclaud.com line 52 and 
-For nexus-repo on jenkins credentials I used nexus.linuxclaud.com
-
-Add credentials ID and Description nexus-creds, username - admin, password - admin123
-
-Add this credential 
-kind is username and password
-username - admin password - admin123
 
 **Then choose https for nexus-repository during setup and put the number 443**

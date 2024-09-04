@@ -6,7 +6,7 @@
   tasks:
     - name: Stop any container running
       command: docker stop appContainer
-      ignore errors: yes
+      ignore_errors: yes
     - name: Remove stopped container
       command: docker rm appContainer
       ignore_errors: yes

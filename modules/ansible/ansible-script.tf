@@ -35,7 +35,7 @@ sudo yum install ansible -y
 # sudo mkdir /etc/ansible
 
 #copy files to ansible server
-sudo echo "${file(var.stage-playbook)}" >> /etc/ansible/stage-playbook.yml 
+sudo echo "${file(var.stage-playbook)}" >> /etc/ansible/stage-playbook.yaml 
 sudo echo "${file(var.stage-discovery-script)}" >> /etc/ansible/stage-bash-script.sh
 sudo echo "${file(var.prod-playbook)}" >> /etc/ansible/prod-playbook.yml
 sudo echo "${file(var.prod-discovery-script)}" >> /etc/ansible/prod-bash-script.sh 

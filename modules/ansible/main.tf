@@ -1,7 +1,7 @@
 # Ansible server
 resource "aws_instance" "ansible-server" {
   ami                         = var.red_hat
-  instance_type               = "t2.medium"
+  instance_type               = "t2.large"
   vpc_security_group_ids      = [var.ansible_sg]
   subnet_id                   = var.ansible_subnet
   associate_public_ip_address = true
