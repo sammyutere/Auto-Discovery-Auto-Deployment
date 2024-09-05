@@ -105,6 +105,8 @@ Enter the initial root token to login and click on the relevant links to see the
 
 - Change directory to root main.tf, run, terraform init, terraform apply -auto-approve
 
+Allow about 5-10 minutes for the user data of the resources you have just provisioned to implemented on the servers.
+
 Use the sonarqube domain name to access the sonarqube server, on your browser, type, https://sonarqube.domain-name eg  https://sonarqube.linuxclaud.com
 
 Login to sonarqube server using the username and password defined in its module script, username=admin password=admin 
@@ -112,10 +114,10 @@ Change when prompted to username and password login credentials of your choice, 
 
 Click on Administration tab
 
-Under Administration, click security, select Users, under Tokens, click the horizontal stripe selection menu, beside Administrator, in the new window that opens, Add Name (sonarqube) and click generate token, copy and save the token, to be used later.
+Under Administration, click security, select Users, under Tokens, click the horizontal stripe selection menu, beside Administrator, in the new window that opens, Add Name **sonarqube** and click generate token, copy and save the token, to be used later.
 
 Under Administration, click configuration, select webhooks, click on create tab.
-Add Name sonarqube
+Add Name **sonarqube**
 Add URL https://jenkins.domain-name eg  https://jenkins.linuxclaud.com/sonarqube-webhook
 Click create
 
@@ -309,7 +311,7 @@ Copy the private key.
 Click on Add, paste the private key
 Click create
 
-
+# To configure Jenkins System
 Next return to manage jenkins, click on System 
 Scroll down to Slack
 Under workspace field, enter slack account username
@@ -367,6 +369,7 @@ For ssh agent, ID and Description is ansible-key, username is ec2-user
 
 Nexus - secret text - nexus url - ID and Description - nexus-repo
 
+# Getting Application Repo and Updating Jenkins File
 Fork this application repo https://github.com/CloudHight/usteam.git,  
 You must uncheck the box fork only main
 Click on main drop down menu and select the branch pet-set19
@@ -381,12 +384,15 @@ Line 110 to the IP address of your ansible server
 Line 117 to your domain name for example, https://prod.linuxclaud.com
 Line 119 to your domain name for example, https://prod.linuxclaud.com
 
+# Updating pet-set19 branch RDS Endpoint on application.properties
+Within this application repo https://github.com/CloudHight/usteam.git, 
+Click on dorp down menu from main, select pet-set19 branch 
+Follow this path src/main/resources/application.properties to get to application.properties file
+Within this file, on line 3, change the url for this **spring.datasource.url=${MYSQL_URL:jdbc:mysql://???/petclinic}** to your RDS endpoint, 
+Replace only this relevant section ???, with your RDS Endpoint, for example, **petclinic.cb4mkka6s8su.eu-west-2.rds.amazonaws.com:3306** 
+This rds endpoint url can be found as one of the output parameters that were generated when you provisioned the resources of the root main.
+
+
 For NewRelic - secret text - API key
-
-For sonarqube setup url, jenkins url/sonarqube-webhook
-This is really important - This change, adding /sonarqube-webhook made it pass quality gate.
-
 In the pet-set19 branch in line 14 of the docker file, ensure you enter your own NewRelic license key 
 
-
-**Then choose https for nexus-repository during setup and put the number 443**

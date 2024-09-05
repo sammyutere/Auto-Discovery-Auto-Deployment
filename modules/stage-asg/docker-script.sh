@@ -11,9 +11,9 @@ sudo yum install docker-ce -y
 
 #add a registry to the Docker daemon configuration to allow insecure communication (without TLS verification) with a Docker registry on port 8085
 sudo cat <<EOT>> /etc/docker/daemon.json
-  {
+{
     "insecure-registries" : ["${nexus-ip}:8085"]
-  }
+}
 EOT
 
 #Starts the Docker service and enables it to run on boot.

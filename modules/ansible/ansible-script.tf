@@ -16,7 +16,7 @@ sudo bash -c 'echo "StrictHostKeyChecking No" >> /etc/ssh/ssh_config'
 #configuring awscli on the ansible server
 sudo su -c "aws configure set aws_access_key_id ${aws_iam_access_key.ansible-user-key.id}" ec2-user
 sudo su -c "aws configure set aws_secret_access_key ${aws_iam_access_key.ansible-user-key.secret}" ec2-user
-sudo su -c "aws configure set default.region eu-west-3" ec2-user
+sudo su -c "aws configure set default.region eu-west-2" ec2-user
 sudo su -c "aws configure set default.output text" ec2-user
 
 # Set Access_keys as ENV Variables
@@ -37,10 +37,10 @@ sudo yum install ansible -y
 #copy files to ansible server
 sudo echo "${file(var.stage-playbook)}" >> /etc/ansible/stage-playbook.yaml 
 sudo echo "${file(var.stage-discovery-script)}" >> /etc/ansible/stage-bash-script.sh
-sudo echo "${file(var.prod-playbook)}" >> /etc/ansible/prod-playbook.yml
+sudo echo "${file(var.prod-playbook)}" >> /etc/ansible/prod-playbook.yaml
 sudo echo "${file(var.prod-discovery-script)}" >> /etc/ansible/prod-bash-script.sh 
 sudo echo "${var.private_key}" >> /home/ec2-user/.ssh/id_rsa
-sudo bash -c 'echo "NEXUS_IP: ${var.nexus-ip}:8085" > /etc/ansible/ansible_vars_file.yml'
+sudo bash -c 'echo "NEXUS_IP: ${var.nexus-ip}:8085" > /etc/ansible/ansible_vars_file.yaml'
 
 # Give the right permissions to the files copied from the local machine into the ansible server
 sudo chown -R ec2-user:ec2-user /etc/ansible
