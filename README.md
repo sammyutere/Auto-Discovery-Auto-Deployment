@@ -2,10 +2,10 @@
 
 # Auto-Discovery-Auto-Deployment
 
-# Project Goal 
-To deploy a higly available, self-healing, scalable and secured containerised Java application, using Jenkins pipeline in Amazon Web Services (AWS).
+## Project Goal 
+To deploy a higly available, self-healing, scalable and secured containerised Monolithic Java application, using Jenkins pipeline in Amazon Web Services (AWS).
 
-# Tech Stack 
+## Tech Stack 
 * Terraform - used as infrastructure as code (IaC) 
 * AWS - used for cloud infrastructure.
 * Git - used as version control system, Repository
@@ -20,8 +20,19 @@ To deploy a higly available, self-healing, scalable and secured containerised Ja
 * Jira/Confluence - used as work management and documentation tool
 
 
-# Application Overview
-This application 
+## Project Overview
+This project contains a bash script for auto-discovery of new instances that are provisioned by the auto-scaling group. The IP addresses of the auto-discovered instances are echoed onto the ansible inventory file, whereupon ansible deploys the application on those discovered instances.
+
+Each instance or server provisioned by the auto-scaling group is pre-configured in the following manner via user data during provisioning:
+1. Install docker hence setup as a docker server.
+2. Create a script directory and copy a script into that directory, - this script manages docker container on the EC2 instance, pulling updates from a Nexus repository.
+
+Whenever the auto-discovery bash script is triggered via a CRON job, ansible server uses the auto-discovery script to check auto-scaling group for the new instances it has provisioned.
+It is only then that the script which manages docker container on the EC2 instance is triggered, pull Nexus repository image.
+
+Take note that auto-scaling group is in a private subnet, which is connected to via application load balancer
+
+The Vault server is provisioned by bash script for automated management of credentials 
 
 ## Note that to be able to adapt this code or replicate this project for your personal use, you must change the following values outlined below
 /*
@@ -56,7 +67,7 @@ This application
 
 */ 
 
-# To Test run the application, Do the Following Shown Below:
+## To Test run the application, Do the Following Shown Below:
 
 Change directory to **remote_state directory** and run, **terraform init**, **terraform apply -auto-approve**   
 Change directory to **backend.tf** which is in the same directory hierarchy as the root main.tf and run, terraform init, terraform apply -auto-approve  
@@ -104,8 +115,17 @@ Next you can check these key value in the vault server user interface, via its d
 Enter the initial root token to login and click on the relevant links to see the key values that we created via the vault server terminal.
 
 - Change directory to root main.tf, run, terraform init, terraform apply -auto-approve
+    Allow about 5-10 minutes for the user data of the resources you have just provisioned to implemented on the servers.
 
-Allow about 5-10 minutes for the user data of the resources you have just provisioned to implemented on the servers.
+## Updating pet-set19 branch RDS Endpoint on application.properties
+Within this application repo https://github.com/CloudHight/usteam.git, 
+Click on dorp down menu from main, select pet-set19 branch 
+Follow this path **src/main/resources/** click on templates, then click on application.properties to get to application.properties file.
+Within this file, on line 3, change the url for this **spring.datasource.url=${MYSQL_URL:jdbc:mysql://???/petclinic}** to your RDS endpoint, 
+Replace only this relevant section ???, with your RDS Endpoint, for example, **petclinic.cb4mkka6s8su.eu-west-2.rds.amazonaws.com:3306** 
+Within this file, on line 4, change the username to the username you configured for the database within the Vault server, in this case, for example, **admin**
+Within this file, on the line 5, change the password to the password you configured for the database within the Vault server, in this case, for example, **admin123**
+This rds endpoint url can be found as one of the output parameters that were generated when you provisioned the resources of the root main.
 
 Use the sonarqube domain name to access the sonarqube server, on your browser, type, https://sonarqube.domain-name eg  https://sonarqube.linuxclaud.com
 
@@ -120,7 +140,6 @@ Under Administration, click configuration, select webhooks, click on create tab.
 Add Name **sonarqube**
 Add URL https://jenkins.domain-name eg  https://jenkins.linuxclaud.com/sonarqube-webhook
 Click create
-
 
 
 Next from the root main terminal, ssh into Nexus server, with the command, **ssh -i petclinic-private-key ec2-user@nexus-server-ip**
@@ -185,7 +204,7 @@ Then click Save and Continue
 
 Click Save and Finish then click Start using Jenkins
 
-# Adding Jenkins Plugins
+## Adding Jenkins Plugins
 Next return to click on manage jenkins
 Click on plugins, click on available plugins
 
@@ -199,7 +218,7 @@ Click on plugins, click on available plugins
 - Type owasp in the available plugins search bar and select OWASP Dependency-check radio button
 Click on install
 
-# Configuring Jenkins Tools
+## Configuring Jenkins Tools
 In the Jenkins account area that opens, click on manage jenkins, click on Tools 
 Under JDK installations, click Add JDK, under Name, type **java**
 Next return to your Jenkins terminal and run the command, **mvn -version**
@@ -233,7 +252,7 @@ Click Apply and Save
 It is important to use NVD API key, when you setup dependency check, otherwise you dependency check part of the Jenkins pipeline will run slowly.
 To generate the API key from the National Vulnerability Database, use this link https://nvd.nist.gov/developers/request-an-api-key  
 
-# Adding credentials on Jenkins
+## Adding credentials on Jenkins
 Next return to manage jenkins, click on credentials, click on global, click on Add credentials
 Under New credentials, for Kind select username and password 
 Scope is Global
@@ -247,7 +266,7 @@ Next Click Add credentials
 Under New credentials, for Kind select Secret text
 Scope is Global 
 In the Secret field enter the sonar token you generated earlier. 
-ID and Description, you type sonarqube
+ID and Description, you type **sonarqube**
 Click Create
 
 
@@ -282,7 +301,7 @@ Scope is Global
 Username: eg admin, Password: eg admin123
 ID and Description, type nexus-creds
 
-# To generate slack token, before setting up slack credential
+## To generate slack token, before setting up slack credential
 To generate token, go to Slack Apps search for Jenkins, Select Jenkins, click configuration, click Add to Slack.
 Under Post to Channel field, select the channel you which to send notifications to.
 Click Add Jenkins CI Integrations
@@ -311,7 +330,7 @@ Copy the private key.
 Click on Add, paste the private key
 Click create
 
-# To configure Jenkins System
+## To configure Jenkins System
 Next return to manage jenkins, click on System 
 Scroll down to Slack
 Under workspace field, enter slack account username
@@ -330,7 +349,7 @@ Under Server authentication token, select **sonarqube**
 Page down, click Apply and Save 
 
 
-
+## To setup webhook between Jenkins and Github Repository
 Within Jenkins browser account, under admin drop down menu, click configure 
 Under API Token, click Add new token, click Generate 
 Copy the token generated, save it to be used later.
@@ -341,9 +360,23 @@ Click settings in the usteam repository page, click webhook
 Use jenkins url eg, http://jenkins.linuxclaud.com/github-webhook
 Paste the Jenkins API token generated in the Secret field
 
-Fork the usteam repository from this link, 
-Change ansible ip and other stuff in Jenkins file
+## Getting Application Repo and Updating Jenkins Pipeline Script File
+Fork the usteam repository from this link, https://github.com/sammyutere/usteam.git  
+You must uncheck the box fork only main
+Click on main drop down menu and select the branch pet-set19
+The Jenkins file path is, usteam/ pet-set19 branch, then under target click on Jenkins file 
+Within the Jenkinsfile, at the far top right, click on the edit pen,
+Change ansible ip and other parameters in the Jenkins file as follows:
 
+Line 52 to your domain name for example, nexus.linuxclaud.com
+Line 82 to the IP address of your ansible server
+Line 89 to your domain name for example, https://stage.linuxclaud.com
+Line 91 to your domain name for example, https://stage.linuxclaud.com
+Line 110 to the IP address of your ansible server 
+Line 117 to your domain name for example, https://prod.linuxclaud.com
+Line 119 to your domain name for example, https://prod.linuxclaud.com
+
+## Setting up Jenkins Pipeline
 Go to Jenkins, Click Dashboard, Click New item
 Enter item Name
 Click Pipeline,
@@ -358,41 +391,8 @@ In Script Path, type, Jenkinsfile
 Click Apply Save
 Click Build Now
 
-*/
-
-Tools must include dependency check
-Plug in addition - Sonar quality gates
-
-To setup webhook on github, choose webhook, paste Jenkins API token, then put url jenkins url/github-webhook
-
-For ssh agent, ID and Description is ansible-key, username is ec2-user
-
-Nexus - secret text - nexus url - ID and Description - nexus-repo
-
-# Getting Application Repo and Updating Jenkins File
-Fork this application repo https://github.com/CloudHight/usteam.git,  
-You must uncheck the box fork only main
-Click on main drop down menu and select the branch pet-set19
-Within this branch click on Jenkinsfile 
-Within the Jenkinsfile, at the far top right, click on the edit pen,
-Change the following:
-Line 52 to your domain name for example, nexus.linuxclaud.com
-Line 82 to the IP address of your ansible server
-Line 89 to your domain name for example, https://stage.linuxclaud.com
-Line 91 to your domain name for example, https://stage.linuxclaud.com
-Line 110 to the IP address of your ansible server 
-Line 117 to your domain name for example, https://prod.linuxclaud.com
-Line 119 to your domain name for example, https://prod.linuxclaud.com
-
-# Updating pet-set19 branch RDS Endpoint on application.properties
-Within this application repo https://github.com/CloudHight/usteam.git, 
-Click on dorp down menu from main, select pet-set19 branch 
-Follow this path src/main/resources/application.properties to get to application.properties file
-Within this file, on line 3, change the url for this **spring.datasource.url=${MYSQL_URL:jdbc:mysql://???/petclinic}** to your RDS endpoint, 
-Replace only this relevant section ???, with your RDS Endpoint, for example, **petclinic.cb4mkka6s8su.eu-west-2.rds.amazonaws.com:3306** 
-This rds endpoint url can be found as one of the output parameters that were generated when you provisioned the resources of the root main.
-
-
 For NewRelic - secret text - API key
 In the pet-set19 branch in line 14 of the docker file, ensure you enter your own NewRelic license key 
+
+*/
 
