@@ -121,7 +121,7 @@ Enter the initial root token to login and click on the relevant links to see the
 Within this application repo https://github.com/CloudHight/usteam.git,  
 Click on drop down menu from main, select pet-set19 branch 
 Follow this path **src/main/resources/** click on templates, then click on application.properties to get to application.properties file.  
-Within this file, on line 3, change the url for this **spring.datasource.url=${MYSQL_URL:jdbc:mysql://???/petclinic}** to your RDS endpoint, 
+Within this file, on line 3, change the url for this > spring.datasource.url=${MYSQL_URL:jdbc:mysql://???/petclinic} to your RDS endpoint, 
 Replace only this relevant section ???, with your RDS Endpoint, for example, **petclinic.cb4mkka6s8su.eu-west-2.rds.amazonaws.com:3306** 
 Within this file, on line 4, change the username to the username you configured for the database within the Vault server, in this case, for example, **admin**
 Within this file, on the line 5, change the password to the password you configured for the database within the Vault server, in this case, for example, **admin123**
